@@ -10,7 +10,7 @@ BACKTITLE="Voziv Servers"
 TITLE="VOZIV"
 MENU="Choose one of the following servers:"
 
-SERVERS=( $(sed -rn 's/^\s*Host\s+(voziv-[^\*](.*))\s*/\1/ip' "$HOME/.ssh/voziv_config") )
+SERVERS=( $(sed -rn 's/^\s*Host\s+(voziv-[^\*](.*))\s*/\1/ip' "$HOME/.voziv/ssh/voziv_config") )
 i=0
 OPTIONS=()
 for server in "${SERVERS[@]}"
