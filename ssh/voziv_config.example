@@ -1,0 +1,14 @@
+# In ~/.ssh/config use Include to include a file
+Include voziv_config
+
+
+# In voziv_config (as an example)
+Host voziv-*
+    ForwardAgent yes
+    User lrobert
+
+#
+# Home
+#
+Host voziv-home-server
+    HostName 10.0.0.1

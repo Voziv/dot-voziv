@@ -1,0 +1,10 @@
+#compdef zedit
+
+# TODO Make this relative to this script somehow.
+scriptdir="$HOME/.voziv/zshrc.d"
+
+A=($( ls $scriptdir ))
+
+_arguments \
+    - options \
+    ":arguments:($A)"

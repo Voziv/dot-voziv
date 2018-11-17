@@ -1,0 +1,46 @@
+[core]
+    excludesfile = ~/.voziv/git/gitignore_global
+[user]
+    name = CHANGEME
+    email = CHANGEME
+	signingkey = CHANGEME
+[alias]
+    bname = "!git branch | grep \\* | cut -d ' ' -f2"
+    lol = log --graph --decorate --pretty=oneline --abbrev-commit --all
+    wow = log --all --graph --decorate --oneline --simplify-by-decoration
+    st = status -bs
+    stag = tag --sort=v:refname
+    ci = commit -am
+    fp = fetch --all --prune
+    co = checkout
+    cob = checkout -b
+    diss = diff --stat
+    br = branch
+    tlog = log --stat --since='1 Day Ago' --graph --pretty=oneline --abbrev-commit --date=relative
+    unstage = reset HEAD --
+    last = log -1 HEAD
+    fetch-all = fetch --all --prune
+    hist = log --pretty=format:'%C(red)%h%Creset %C(bold blue)%ad%Creset | %s%d %C(yellow)[%an]%Creset' --graph --date=short
+    l = log --date=short --pretty=format:'%C(bold blue)%cd %Creset%C(red)%h%Creset%C(auto)%d %Creset%C(normal)%s %Creset%C(bold blue)(%Creset%C(yellow)%an %Creset%C(bold blue)%cr)%Creset' --color --graph --decorate --all
+    brandl = log --date=short --pretty=format:'\
+%C(bold blue)%cd %Creset\
+%C(red)%h%Creset\
+%C(auto)%d %Creset\
+%C(normal)%s %Creset\
+%C(bold blue)(%Creset\
+%C(yellow)%an %Creset\
+%C(bold blue)%cr)%Creset\
+' --color --graph --decorate
+[push]
+    default = simple
+[merge]
+	tool = kdiff3
+[mergetool "p4merge"]
+	cmd = p4merge "$BASE" "$LOCAL" "$REMOTE" "$MERGED"
+	keepTemporaries = false
+	trustExitCode = false
+	keepBackup = false
+[mergetool]
+	prompt = false
+[commit]
+	gpgsign = true

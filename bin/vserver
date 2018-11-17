@@ -1,0 +1,43 @@
+#!/bin/bash
+####
+#### Description: Parses the ssh_config file named voziv_config and
+####              provides a GUI menu.
+####
+HEIGHT=15
+WIDTH=40
+CHOICE_HEIGHT=5
+BACKTITLE="Voziv Servers"
+TITLE="VOZIV"
+MENU="Choose one of the following servers:"
+
+SERVERS=( $(sed -rn 's/^\s*Host\s+(voziv-[^\*](.*))\s*/\1/ip' "$HOME/.ssh/voziv_config") )
+i=0
+OPTIONS=()
+for server in "${SERVERS[@]}"
+do
+    :
+    OPTIONS+=($i)
+    OPTIONS+=("$server")
+    let i=${i}+1
+done
+
+CHOICE=$(dialog --clear \
+                --backtitle "$BACKTITLE" \
+                --title "$TITLE" \
+                --menu "$MENU" \
+                $HEIGHT $WIDTH $CHOICE_HEIGHT \
+                "${OPTIONS[@]}" \
+                2>&1 >/dev/tty)
+clear
+
+if [ -z "$CHOICE" ]; then
+    exit 0;
+fi;
+
+case $CHOICE in
+        *)
+            server="${SERVERS[${CHOICE}]}"
+            echo "Connecting to $server"
+            ssh "$server"
+            ;;
+esac
