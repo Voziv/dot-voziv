@@ -20,14 +20,6 @@ function zedit () {
     esac
 }
 
-function md() {
-    if [[ ! -z "/usr/local/bin/mdless" ]]; then
-        mdless --no-pager $1
-    else
-        echo "mdless not installed - run 'gem install mdless'"
-    fi
-}
-
 # TODO check if screen session of <fruit> name already exists
 # before creating a same-named session.
 function scn() {
@@ -48,6 +40,7 @@ function scn() {
         screen -S "$name"
     }
 }
+
 
 #
 # A completely useless function, that just does what the name implies
