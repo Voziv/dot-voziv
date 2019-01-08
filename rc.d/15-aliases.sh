@@ -4,11 +4,11 @@
 alias pbcopy="xclip -sel clip"
 
 ### convenience
-alias    ls='\ls -l -phF'
-alias    ll='\ls -halp -F'
-alias     l='\ls -p'
-alias    la='\ls -pa'
-alias    l.='\ls -halpd .*'
+alias    ls='\ls -l -phF --color=auto'
+alias    ll='\ls -halp -F --color=auto'
+alias     l='\ls -p --color=auto'
+alias    la='\ls -pa --color=auto'
+alias    l.='\ls -halpd --color=auto .*'
 alias     j='jobs -l'
 alias     h='history'
 alias    nv="nvim" # let's try out this whole neovim thing ...
