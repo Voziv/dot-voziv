@@ -237,4 +237,4 @@ au BufNewFile,BufRead *.ejs set filetype=html
 " set explicit tab character for .at files
 "au BufNewFile,BufRead *.a[tm], set noic cin noexpandtab list filetype=autotest
 "au Filetype autotest setlocal noexpandtab list
-
+match ErrorMsg '\%>72v.\+'
