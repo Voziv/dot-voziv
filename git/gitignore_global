@@ -1,5 +1,5 @@
 .~lock.*
-.orig
+*.orig
 .DS_Store
 .AppleDouble
 .LSOverride
