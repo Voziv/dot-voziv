@@ -1,5 +1,6 @@
 #!/bin/zsh
 
-export PATH="$HOME/.config/composer/vendor/bin:$PATH"
-export PATH="$HOME/.voziv/bin:$PATH"
-export PATH="$HOME/bin:$PATH"
+PATH="$HOME/.config/composer/vendor/bin:$PATH"
+PATH="$HOME/.voziv/bin:$PATH"
+PATH="$HOME/bin:$PATH"
+export PATH
