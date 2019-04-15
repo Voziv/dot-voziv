@@ -11,7 +11,7 @@
     st = status -bs
     stag = tag --sort=v:refname
     ci = commit -am
-    fp = fetch --all --prune
+    fp = fetch --prune
     co = checkout
     cob = checkout -b
     diss = diff --stat
