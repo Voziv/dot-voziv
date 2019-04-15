@@ -5,7 +5,10 @@
     email = CHANGEME
 	signingkey = CHANGEME
 [alias]
+    ap = add --patch
     bname = "!git branch | grep \\* | cut -d ' ' -f2"
+    uname = "!git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null || echo ''"
+    maybebname = "!git rev-parse --abbrev-ref --symbolic-full-name \"$1\" 2>/dev/null >/dev/null && echo"
     lol = log --graph --decorate --pretty=oneline --abbrev-commit --all
     wow = log --all --graph --decorate --oneline --simplify-by-decoration
     st = status -bs
@@ -22,7 +25,8 @@
     fetch-all = fetch --all --prune
     hist = log --pretty=format:'%C(red)%h%Creset %C(bold blue)%ad%Creset | %s%d %C(yellow)[%an]%Creset' --graph --date=short
     la = log --date=short --pretty=format:'%C(bold blue)%cd %Creset%C(red)%h%Creset%C(auto)%d %Creset%C(normal)%s %Creset%C(bold blue)(%Creset%C(yellow)%an %Creset%C(bold blue)%cr)%Creset' --color --graph --decorate --all
-    l = "!git brandl dev origin/dev $(git bname) @{u}"
+    lmaster = "!git brandl $(git maybebname master) $(git maybebname origin/master) $(git bname) $(git uname)"
+    l = "!git brandl $(git maybebname dev) $(git maybebname origin/dev) $(git bname) $(git uname)"
     brandl = log --date=short --pretty=format:'\
 %C(bold blue)%cd %Creset\
 %C(red)%h%Creset\
@@ -45,3 +49,5 @@
 	prompt = false
 [commit]
 	gpgsign = true
+[tag]
+	forceSignAnnotated = true
