@@ -21,7 +21,8 @@
     last = log -1 HEAD
     fetch-all = fetch --all --prune
     hist = log --pretty=format:'%C(red)%h%Creset %C(bold blue)%ad%Creset | %s%d %C(yellow)[%an]%Creset' --graph --date=short
-    l = log --date=short --pretty=format:'%C(bold blue)%cd %Creset%C(red)%h%Creset%C(auto)%d %Creset%C(normal)%s %Creset%C(bold blue)(%Creset%C(yellow)%an %Creset%C(bold blue)%cr)%Creset' --color --graph --decorate --all
+    la = log --date=short --pretty=format:'%C(bold blue)%cd %Creset%C(red)%h%Creset%C(auto)%d %Creset%C(normal)%s %Creset%C(bold blue)(%Creset%C(yellow)%an %Creset%C(bold blue)%cr)%Creset' --color --graph --decorate --all
+    l = "!git brandl dev origin/dev $(git bname) @{u}"
     brandl = log --date=short --pretty=format:'\
 %C(bold blue)%cd %Creset\
 %C(red)%h%Creset\
