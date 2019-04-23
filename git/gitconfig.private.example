@@ -1,0 +1,8 @@
+[user]
+    name = CHANGEME
+    email = CHANGEME
+    signingkey = CHANGEME
+[commit]
+	gpgsign = true
+[tag]
+	forceSignAnnotated = true

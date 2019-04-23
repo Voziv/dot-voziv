@@ -1,9 +1,7 @@
+[include]
+    path = ~/.voziv/git/gitconfig.private
 [core]
     excludesfile = ~/.voziv/git/gitignore_global
-[user]
-    name = CHANGEME
-    email = CHANGEME
-	signingkey = CHANGEME
 [alias]
     ap = add --patch
     bname = "!git branch | grep \\* | cut -d ' ' -f2"
@@ -47,7 +45,3 @@
 	keepBackup = false
 [mergetool]
 	prompt = false
-[commit]
-	gpgsign = true
-[tag]
-	forceSignAnnotated = true
