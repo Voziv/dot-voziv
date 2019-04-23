@@ -16,6 +16,7 @@
     co = checkout
     cob = checkout -b
     diss = diff --stat
+    undo = reset --soft HEAD~1
     br = branch
     tlog = log --stat --since='1 Day Ago' --graph --pretty=oneline --abbrev-commit --date=relative
     unstage = reset HEAD --
