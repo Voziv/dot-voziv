@@ -29,6 +29,9 @@ will warn you if you already have existing files such as `.gitconfig`.
 If they exist you should review them to make sure you've transferred your 
 settings over.
 
+#### 4. Install plugins
+git clone https://github.com/supercrabtree/k $ZSH_CUSTOM/plugins/k
+
 
 ### TODO
 - Automate installation of the `~/.zshrc` and `~/.bashrc` files
