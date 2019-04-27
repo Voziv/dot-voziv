@@ -66,7 +66,6 @@ plugins=(
   git
   docker
   k
-  oh-my-matrix
   sudo
 )
 
