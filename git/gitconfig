@@ -46,3 +46,5 @@
 	keepBackup = false
 [mergetool]
 	prompt = false
+[pull]
+	ff = only
