@@ -11,8 +11,8 @@ First start by cloning the repository to `$HOME/.voziv`
 
 ```sh
 cd $HOME/.voziv
-cp voziv.conf.example voziv.conf && vi git/gitconfig
-cp git/gitconfig.example git/gitconfig && vi git/gitconfig
+cp voziv.conf.example voziv.conf && vi voziv.conf
+cp git/gitconfig.private.example git/gitconfig.private && vi git/gitconfig.private
 cp ssh/voziv_config.example ssh/voziv_config && vi ssh/voziv_config
 ```
 
