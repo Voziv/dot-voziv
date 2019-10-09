@@ -65,7 +65,6 @@ DISABLE_AUTO_TITLE="true"
 plugins=(
   git
   docker
-  k
   sudo
 )
 
