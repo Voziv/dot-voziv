@@ -1,0 +1,12 @@
+#!/bin/bash
+####
+#### Env Loader
+####
+venv_clean="$HOME/.voziv/envs/env-clean"
+venv_target="$HOME/.voziv/envs/env-$1"
+if [ -f "$venv_target" ]; then
+  . "$venv_clean"
+  . "$venv_target"
+else
+  echo "Env not found"
+fi

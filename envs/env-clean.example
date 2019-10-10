@@ -1,0 +1,28 @@
+#!/bin/bash
+####
+#### Clean up the env
+####
+
+# Restore PS1 if we have a backup
+if [ -n "$original_ps1" ]; then
+  export PS1=$original_ps1
+fi
+
+# Back up PS1
+export original_ps1=$PS1
+
+#
+# CloudFlare reset
+#
+unset CLOUDFLARE_AUTH_KEY
+unset CLOUDFLARE_AUTH_EMAIL
+unset CLOUDFLARE_ZONE_ID_VOZIV_COM
+unset CLOUDFLARE_ACCOUNT_ID
+
+#
+# GCLOUDSDK (for gcloud cli)
+#
+unset CLOUDSDK_CORE_ACCOUNT
+unset CLOUDSDK_CORE_PROJECT
+unset CLOUDSDK_COMPUTE_REGION
+unset CLOUDSDK_COMPUTE_ZONE

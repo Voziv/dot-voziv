@@ -1,0 +1,21 @@
+#!/bin/bash
+####
+#### Voziv Environment
+####
+export PS1="[VZ] $PS1"
+
+#
+# CloudFlare keys
+#
+export CLOUDFLARE_AUTH_KEY=""
+export CLOUDFLARE_AUTH_EMAIL=""
+export CLOUDFLARE_ZONE_ID_VOZIV_COM=""
+export CLOUDFLARE_ACCOUNT_ID=""
+
+#
+# GCLOUDSDK (for gcloud cli)
+#
+export CLOUDSDK_CORE_ACCOUNT=""
+export CLOUDSDK_CORE_PROJECT=""
+export CLOUDSDK_COMPUTE_REGION=""
+export CLOUDSDK_COMPUTE_ZONE=""
