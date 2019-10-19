@@ -50,3 +50,5 @@
 	prompt = false
 [pull]
 	ff = only
+[diff "sopsdiffer"]
+	textconv = sops -d
