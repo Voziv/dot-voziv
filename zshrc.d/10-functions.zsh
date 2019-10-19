@@ -3,15 +3,33 @@
 # reference to dir containing source files
 zshdir=${0:h}
 
-# reference to dir containing completion function files
-fpath+="`dirname $0`/completions"
-
 ### shortcut functions to edit zsh configurations
 function zedit () {
     file=$1
     case "$file" in
-        aliases|functions|zshrc|completions|paths)
-            vi ${zshdir}/${file}
+        completions)
+            vi ${zshdir}/03-completions.zsh
+            ;;
+        completions.d)
+            vi ${zshdir}/completions.d
+            ;;
+        zshrc)
+            vi ${zshdir}/01-zshrc.zsh
+            ;;
+        oh-my-zsh)
+            vi ${zshdir}/02-oh-my.zsh
+            ;;
+        paths)
+            vi ${zshdir}/05-paths.zsh
+            ;;
+        functions)
+            vi ${zshdir}/10-functions.zsh
+            ;;
+        aliases)
+            vi ${zshdir}/15-aliases.zsh
+            ;;
+        ps1)
+            vi ${zshdir}/20-ps1.zsh
             ;;
         *)
             echo "Invalid file"
