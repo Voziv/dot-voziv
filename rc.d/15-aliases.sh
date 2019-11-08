@@ -1,14 +1,19 @@
 #!/bin/sh
+lsColorTag="--color=auto"
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    lsColorTag="-G"
+fi
 
 # Copy to clipboard. EG: cat ~/.zshrc | pbcopy
 alias pbcopy="xclip -sel clip"
 
 ### convenience
-alias    ls='\ls -l -phF --color=auto'
-alias    ll='\ls -halp -F --color=auto'
-alias     l='\ls -p --color=auto'
-alias    la='\ls -pa --color=auto'
-alias    l.='\ls -halpd --color=auto .*'
+alias    ls="\ls -l -phF $lsColorTag"
+alias    ll="\ls -halp -F $lsColorTag"
+alias     l="\ls -p $lsColorTag"
+alias    la="\ls -pa $lsColorTag"
+alias    l.="\ls -halpd $lsColorTag .*"
 alias     j='jobs -l'
 alias     h='history'
 alias    nv="nvim" # let's try out this whole neovim thing ...
