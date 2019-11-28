@@ -2,6 +2,7 @@
     path = ~/.voziv/git/gitconfig.private
 [core]
     excludesfile = ~/.voziv/git/gitignore_global
+    pager = "diff-so-fancy | less --tabs=4 -RFX"
 [alias]
     ap = add --patch
     bname = "!git branch | grep \\* | cut -d ' ' -f2"
