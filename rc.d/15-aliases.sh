@@ -1,8 +1,10 @@
 #!/bin/sh
 lsColorTag="--color=auto"
+rmAlias="rm - I"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     lsColorTag="-G"
+    rmAlias="rm"
 fi
 
 # Copy to clipboard. EG: cat ~/.zshrc | pbcopy
@@ -45,6 +47,7 @@ alias uptime='uptime --pretty'            # show uptime output in 'pretty' time 
 
 ### safety aliases
 alias    mv='mv -i'                       # prompts for safety
-alias    rm='rm -I'                       # "
+alias    rm=$rmAlias                      # "
 alias    cp='cp -i'                       # "
 alias    ln='ln -i'                       # "
+
