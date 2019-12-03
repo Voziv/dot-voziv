@@ -7,6 +7,10 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     rmAlias="rm"
 fi
 
+
+alias helm3="snap run helm"
+
+
 # Copy to clipboard. EG: cat ~/.zshrc | pbcopy
 alias pbcopy="xclip -sel clip"
 
