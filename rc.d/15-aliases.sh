@@ -1,6 +1,6 @@
 #!/bin/sh
 lsColorTag="--color=auto"
-rmAlias="rm - I"
+rmAlias="rm -I"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     lsColorTag="-G"
