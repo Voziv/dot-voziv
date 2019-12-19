@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -o errexit
+set -o pipefail
+set -o nounset
+# set -o xtrace
+
+# Set magic variables for current file & dir
+__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+__file="${__dir}/$(basename "${BASH_SOURCE[0]}")"
+__base="$(basename ${__file} .sh)"
+__root="$(cd "$(dirname "${__dir}")/../.." && pwd)"
+
+
+gcloud_configuration="squadley"
+
+echo "Switching to SQUADLEY resources"
+
+echo "Switching gcloud configuration to ${gcloud_configuration}"
+gcloud config configurations activate "$gcloud_configuration"
+
+echo ""
+echo "========================================"
+echo ""
+echo "Switch complete. If you need to switch sops you need to run"
+echo "gcloud auth application-default login"
+echo "in order to write the proper file."
+echo ""
+echo "========================================"
+echo ""
