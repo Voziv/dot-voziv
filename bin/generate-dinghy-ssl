@@ -1,0 +1,78 @@
+#!/bin/bash
+#
+# Generates a new set of self-signed certificates
+#
+set -o errexit
+set -o pipefail
+set -o nounset
+# set -o xtrace
+
+# Set magic variables for current file & dir
+__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+__file="${__dir}/$(basename "${BASH_SOURCE[0]}")"
+__base="$(basename ${__file} .sh)"
+__root="$(cd "$(dirname "${__dir}")" && pwd)"
+
+certdir="$HOME/.dinghy/certs"
+rootkey="${certdir}/rootCA.key"
+rootcrt="${certdir}/rootCA.crt"
+
+mkdir -p "${certdir}"
+
+if [ ! -f "$rootkey" ]; then
+  echo "Root key doesnt exist. Creating."
+  openssl genrsa -out "${rootkey}" 4096
+else
+  echo "Root key already exists. Skipping."
+fi
+
+if [ ! -f "$rootcrt" ]; then
+  echo "Root crt doesnt exist. Creating."
+  openssl req -x509 -new -nodes -key "${rootkey}" -sha256 -days 1024 \
+    -subj "/CN=rootCA.crt" \
+    -reqexts v3_req \
+    -extensions v3_ca \
+    -out "${rootcrt}" \
+    -config "${__root}/openssl/rootCA.conf"
+else
+  echo "Root crt already exists. Skipping."
+fi
+
+#openssl req -new -sha256 -key mydomain.com.key -subj "/C=US/ST=CA/O=MyOrg, Inc./CN=mydomain.com" -out mydomain.com.csr
+#openssl x509 -req -in mydomain.com.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out mydomain.com.crt -days 500 -sha256
+
+
+openssl req -new -sha256 \
+  -newkey rsa:2048 -nodes -keyout "${certdir}/.voziv.dev.key" \
+  -config "${__root}/openssl/voziv.dev.conf" \
+  -out "${certdir}/.voziv.dev.csr" \
+  -subj "/C=US/ST=Ontario/L=Kingston/O=Voziv/OU=Org/CN=*.voziv.dev"
+
+openssl x509 -req \
+  -in "${certdir}/.voziv.dev.csr" \
+  -out "${certdir}/.voziv.dev.crt" \
+  -days 3650 \
+  -CA "${rootcrt}" \
+  -CAkey "${rootkey}" \
+  -CAcreateserial
+
+echo ""
+echo "Certificates finished. Make sure to copy to your ca-certificates and update."
+echo "sudo cp rootCA.crt /usr/local/share/ca-certificates"
+echo "sudo cp .voziv.dev.crt /usr/local/share/ca-certificates/.voziv.dev.crt"
+echo "sudo update-ca-certificates"
+echo ""
+echo "For firefox trusting on ubuntu go to preferences -> security devices"
+echo "and load a new module: /usr/lib/x86_64-linux-gnu/pkcs11/p11-kit-trust.so"
+echo "This will allow firefox to load from ca-certificates"
+echo ""
+
+# For OSX Trusting
+# Locate where your certificate file is. It is likely to be somewhere near your web server configurations.
+# Open up Keychain Access. You can get to it from Application/Utilities/Keychain Access.app.
+# Drag your certificate into Keychain Access.
+# Go into the Certificates section and locate the certificate you just added
+# Double click on it, expand the trust section and under “When using this certificate” select “Always Trust”
+# Close the window and it will prompt you for your password to save the change.
+# You may need to reboot / restart chrome for it to take ffect
+
