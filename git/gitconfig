@@ -51,6 +51,7 @@
 	prompt = false
 [pull]
 	ff = only
+	rebase = true
 [diff "sopsdiffer"]
 	textconv = sops -d
 [color]
