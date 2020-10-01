@@ -20,8 +20,8 @@ echo "Switching to VOZIV resources"
 echo "Switching doctl account to ${doctl_context}"
 doctl auth switch --context="$doctl_context"
 
-echo "Switching kube context to ${doctl_cluster}"
-doctl kubernetes cluster kubeconfig save "$doctl_cluster"
+#echo "Switching kube context to ${doctl_cluster}"
+#doctl kubernetes cluster kubeconfig save "$doctl_cluster"
 
 echo "Switching gcloud configuration to ${gcloud_configuration}"
 gcloud config configurations activate "$gcloud_configuration"
