@@ -49,6 +49,8 @@
 	keepBackup = false
 [mergetool]
 	prompt = false
+[rebase]
+	autoStash = true
 [pull]
 	ff = only
 	rebase = true
