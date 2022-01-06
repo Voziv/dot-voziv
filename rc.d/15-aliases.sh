@@ -40,7 +40,7 @@ alias -g  quiet='2> /dev/null'
 alias -g silent='&> /dev/null'
 
 # Docker stuff
-alias dc='docker-compose'
+alias dc='docker compose'
 
 ### info aliases
 alias ports='sudo netstat -uplant'        # list all TCP/UDP ports on the server
