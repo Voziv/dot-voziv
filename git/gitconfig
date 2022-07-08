@@ -74,3 +74,5 @@
 	diff = diff-so-fancy | less --tabs=4 -RFXS --pattern '^(Date|added|deleted|modified): '
 [fetch]
 	prune = true
+[init]
+	defaultBranch = main
