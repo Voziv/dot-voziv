@@ -52,7 +52,7 @@
 [rebase]
 	autoStash = true
 [pull]
-	ff = only
+#	ff = only
 	rebase = true
 [diff "sopsdiffer"]
 	textconv = sops -d
