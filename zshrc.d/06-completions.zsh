@@ -19,5 +19,9 @@ if type -p "minikube" &> /dev/null; then
   source <(minikube completion zsh)
 fi
 
+if type -p "k3d" &> /dev/null; then
+  source <(k3d completion zsh)
+fi
+
 # Reload the zsh-completions
 autoload -U compinit && compinit
