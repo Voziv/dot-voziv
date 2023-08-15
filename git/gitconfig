@@ -10,6 +10,7 @@
     co = checkout
     fap = fetch --all --prune
     fp = fetch --prune
+    gone = "!git fetch -p && for branch in $(git branch -vv | grep ': gone]' | awk '{print $1}'); do git branch -D $branch; done"
     l = log --date=short --pretty=format:'\
 %C(bold blue)%cd %Creset\
 %C(red)%h%Creset\
