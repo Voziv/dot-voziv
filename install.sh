@@ -67,7 +67,7 @@ function rm_symlink() {
 
 
 function install_profile() {
-    sourceString="source $script_dir/.profile"
+    sourceString="source $script_dir/profile"
     if grep -q -F "$sourceString" "$HOME/.profile"; then 
         echo ".profile already configured. Skipping."
         return
