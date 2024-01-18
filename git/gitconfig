@@ -23,6 +23,7 @@
     last = log -1 HEAD
     poo = push
     poosh = push
+    pushy = push
     st = status -bs
     stag = tag --sort=v:refname
     undo = reset --soft HEAD~1
