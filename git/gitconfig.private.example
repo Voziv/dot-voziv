@@ -6,3 +6,14 @@
 	gpgsign = true
 [tag]
 	forceSignAnnotated = true
+
+# Example for using 1password for ssh gpg signing
+[user]
+  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBeLV+a1eLlgpLyfSZa8WqsfgPNqevt4YiCCb+jhw84c
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  program = "C:/Users/<USER>/AppData/Local/1Password/app/8/op-ssh-sign.exe"
+
