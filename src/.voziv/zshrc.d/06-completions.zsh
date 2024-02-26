@@ -31,3 +31,6 @@ fi
 
 # Reload the zsh-completions
 autoload -U compinit && compinit
+
+# Support bash completions
+bashcompinit
