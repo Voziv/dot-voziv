@@ -31,38 +31,41 @@
 [push]
     default = simple
 [merge]
-	tool = kdiff3
+    tool = kdiff3
 [mergetool "p4merge"]
-	cmd = p4merge "$BASE" "$LOCAL" "$REMOTE" "$MERGED"
-	keepTemporaries = false
-	trustExitCode = false
-	keepBackup = false
+    cmd = p4merge "$BASE" "$LOCAL" "$REMOTE" "$MERGED"
+    keepTemporaries = false
+    trustExitCode = false
+    keepBackup = false
 [mergetool]
-	prompt = false
+    prompt = false
 [rebase]
-	autoStash = true
+    autoStash = true
 [pull]
-#	ff = only
-	rebase = true
+#    ff = only
+    rebase = true
 [diff "sopsdiffer"]
-	textconv = sops -d
+    textconv = sops -d
 [color]
-	ui = true
+    ui = true
 [color "diff-highlight"]
-	oldNormal = red bold
-	oldHighlight = red bold 52
-	newNormal = green bold
-	newHighlight = green bold 22
+    oldNormal = red bold
+    oldHighlight = red bold 52
+    newNormal = green bold
+    newHighlight = green bold 22
 [color "diff"]
-	meta = 11
-	frag = magenta bold
-	commit = yellow bold
-	old = red bold
-	new = green bold
-	whitespace = red reverse
+    meta = 11
+    frag = magenta bold
+    commit = yellow bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
 [pager]
-	diff = diff-so-fancy | less --tabs=4 -RFXS --pattern '^(Date|added|deleted|modified): '
+    diff = diff-so-fancy | less --tabs=4 -RFXS --pattern '^(Date|added|deleted|modified): '
 [fetch]
-	prune = true
+    prune = true
 [init]
-	defaultBranch = main
+    defaultBranch = main
+[gitbutler]
+    utmostDiscretion = 1
+    signCommits = true
