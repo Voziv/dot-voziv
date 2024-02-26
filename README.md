@@ -1,46 +1,45 @@
 ## Voziv's portable shell configuration
 
+### Prerequisites
+
+Install deps: `apt install zsh fzf`
+
+Install oh-my-zsh `sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
+
+Reminder: You'll have to logout when changing your shell for it to take effect by default in the terminal app.
+
 ### Installation
 
 #### 1. Clone repo
-First start by cloning the repository to `$HOME/.voziv`
+First start by cloning the repository to your projects folder, eg: `~/dev/voziv/dot-voziv`
 
-`git clone git@github.com:voziv/dot-voziv $HOME/.voziv`
+`git clone --recurse-submodules git@github.com:voziv/dot-voziv`
 
 #### 2. Copy and edit configs 
 
 ```sh
-cd $HOME/.voziv
-cp voziv.conf.example voziv.conf && vi voziv.conf
-cp git/gitconfig.private.example git/gitconfig.private && vi git/gitconfig.private
-cp ssh/voziv_config.example ssh/voziv_config && vi ssh/voziv_config
+cd dot-voziv
+cd src/.voziv/git
+cp gitconfig.private.example gitconfig.private && vi git/gitconfig.private
+cd ../ssh
+cp voziv_config.example voziv_config && vi voziv_config
 ```
 
-#### 3. Setup zshrc and bashrc files.
-For zsh add to your `~/.zshrc` file: `echo 'source $HOME/.voziv/.zshrc' > $HOME/.zshrc`
+#### 3. Stow!
 
-For bashrc add to your `~/.bashrc` file: `echo 'source $HOME/.voziv/.bashrc' > $HOME/.bashrc`
+Run `stow -t $HOME src`
 
-#### 3. Install the symlinks to the rest of the files
-Finally run the installer: `bash $HOME/.voziv/install.sh`
+In cases where files already exist you may need to add the `--adopt` flag. If you do this you'll need to check and revert the changes in this repo after adoption.
 
-Do note that this will overwrite symlinks in your home folder. The script
-will warn you if you already have existing files such as `.gitconfig`.
-If they exist you should review them to make sure you've transferred your 
-settings over.
+It's worth noting that you may want to merge the changes. That's an excerise for the reader :)
+
+
+#### 4. Optional configuration
+
+SSH config:
+```
+```
 
 #### 4. Install plugins
 git clone https://github.com/supercrabtree/k $ZSH_CUSTOM/plugins/k
 
-
-### TODO
-- Automate installation of the `~/.zshrc` and `~/.bashrc` files
-
-### FAQ
-
-#### Why don't you symlink the `~/.zshrc`/`~/.bashrc` files?
-
-These rc files may have 3rd party code added to them. Rather than setting up some system to 
-detect and load this from a different file we just source our own loaders.
-
-You could optionally empty your rc files before sourcing mine.
