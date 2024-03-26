@@ -1,0 +1,19 @@
+[user]
+    name = CHANGEME
+    email = CHANGEME
+    signingkey = CHANGEME
+[commit]
+	gpgsign = true
+[tag]
+	forceSignAnnotated = true
+
+# Example for using 1password for ssh gpg signing
+[user]
+  signingkey = ssh-ed25519 <your-key>
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  program = "C:/Users/<USER>/AppData/Local/1Password/app/8/op-ssh-sign.exe"
+
