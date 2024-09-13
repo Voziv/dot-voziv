@@ -24,6 +24,7 @@
     poo = push
     poosh = push
     pushy = push
+    pushup = push -u origin HEAD
     st = status -bs
     stag = tag --sort=v:refname
     undo = reset --soft HEAD~1
