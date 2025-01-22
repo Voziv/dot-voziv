@@ -30,7 +30,7 @@ if type -p "gcloud" &> /dev/null; then
 fi
 
 # Reload the zsh-completions
-autoload -U compinit && compinit
+autoload -Uz compinit && compinit
 
 # Support bash completions
 bashcompinit
