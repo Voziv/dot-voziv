@@ -1,8 +1,9 @@
-
 # In PopOS! this becomes problematic.
-if [ $(lsb_release -si) = "Pop" ]; then
-  if [ $(lsb_release -sr) = "22.04" ]; then
-    export MONGOMS_DISTRO="ubuntu-22.04"
-    export MONGOMS_ARCHIVE_NAME="mongodb-linux-x86_64-ubuntu2204-6.0.6.tgz"
+if command -v lsb_release >/dev/null 2>&1; then
+  if [ $(lsb_release -si) = "Pop" ]; then
+    if [ $(lsb_release -sr) = "22.04" ]; then
+      export MONGOMS_DISTRO="ubuntu-22.04"
+      export MONGOMS_ARCHIVE_NAME="mongodb-linux-x86_64-ubuntu2204-6.0.6.tgz"
+    fi
   fi
 fi
