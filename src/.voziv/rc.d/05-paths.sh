@@ -1,5 +1,5 @@
 
-
+PATH="$HOME/.composer/vendor/bin:$PATH"
 PATH="$HOME/.config/composer/vendor/bin:$PATH"
 PATH="$HOME/.npm-global/bin:$PATH"
 PATH="$HOME/.voziv/bin:$PATH"
