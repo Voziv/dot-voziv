@@ -1,14 +1,35 @@
+append_path()
+{
+  if test -d "$1"; then
+    case ":$PATH:" in
+      *":$1:"*) ;;
+      *) export PATH="$PATH:$1" ;;
+    esac
+  fi
+}
 
-PATH="$HOME/.composer/vendor/bin:$PATH"
-PATH="$HOME/.config/composer/vendor/bin:$PATH"
-PATH="$HOME/.npm-global/bin:$PATH"
-PATH="$HOME/.voziv/bin:$PATH"
-PATH="$HOME/bin:$PATH"
-PATH="$HOME/bin/nvim/bin:$PATH"
-PATH="$PATH:$HOME/.local/bin/"
-PATH="$PATH:$HOME/.linkerd2/bin"
+prepend_path()
+{
+  if test -d "$1"; then
+        case ":$PATH:" in
+          *":$1:"*) ;;
+          *) export PATH="$1:$PATH" ;;
+        esac
+  fi
+}
 
-# Rancher desktop
-PATH="$PATH:$HOME/.rd/bin"
+prepend_path "$HOME/bin"
+prepend_path "$HOME/bin"
+prepend_path "$HOME/bin"
+prepend_path "$HOME/bin"
+prepend_path "$HOME/bin"
+prepend_path "$HOME/.local/bin"
+prepend_path "$HOME/.voziv/bin"
 
-export PATH
+append_path "$HOME/.composer/vendor/bin"
+append_path "$HOME/.config/composer/vendor/bin"
+append_path "$HOME/.linkerd2/bin"
+append_path "$HOME/.lmstudio/bin"
+append_path "$HOME/.npm-global/bin"
+append_path "$HOME/bin/nvim/bin"
+append_path "$HOME/.rd/bin"
