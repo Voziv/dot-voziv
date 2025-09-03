@@ -24,8 +24,14 @@ if type -p "k3d" &> /dev/null; then
 fi
 
 if type -p "gcloud" &> /dev/null; then
-  if [ -f "/usr/share/google-cloud-sdk/completion.zsh.inc" ]; then
-    source /usr/share/google-cloud-sdk/completion.zsh.inc
+  if we_are_mac; then
+    if [ -f "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc" ]; then
+      source /opt/homebrew/share/google-cloud-sdk/completion.zsh.inc
+    fi
+  else
+    if [ -f "/usr/share/google-cloud-sdk/completion.zsh.inc" ]; then
+      source /usr/share/google-cloud-sdk/completion.zsh.inc
+    fi
   fi
 fi
 

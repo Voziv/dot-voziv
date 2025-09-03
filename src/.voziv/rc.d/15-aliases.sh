@@ -1,35 +1,22 @@
 #!/bin/sh
-lsColorTag="--color=auto"
-rmAlias="rm -I"
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    lsColorTag="-G"
-    rmAlias="rm"
+
+# Mac has a really cool tool called pbcopy, xclip lets us do this on linux
+# Copy to clipboard. EG: cat ~/.zshrc | pbcopy
+if we_are_linux; then
+  if type -p "xclip" &> /dev/null; then
+    alias pbcopy="xclip -sel clip"
+  fi
 fi
 
+# Default to neovim if we have it installed
+if type -p "nvim" &> /dev/null; then
+  alias  nv="nvim"
+  alias  vi="nvim"
+  alias vim="nvim"
+fi
 
-alias helm3="snap run helm"
-
-
-# Copy to clipboard. EG: cat ~/.zshrc | pbcopy
-alias pbcopy="xclip -sel clip"
-
-### convenience
-alias    ls="\ls -l -phF $lsColorTag"
-alias    ll="\ls -halp -F $lsColorTag"
-alias     l="\ls -p $lsColorTag"
-alias    la="\ls -pa $lsColorTag"
-alias    l.="\ls -halpd $lsColorTag .*"
-alias     j='jobs -l'
-alias     h='history'
-alias    nv="nvim" # let's try out this whole neovim thing ...
-alias    vi="nvim"
-alias   vim="nvim"
-#alias  tmux="tmux2.3 -2"
 alias  tmux="tmux -u"
-
-### convenience (more specific)
-alias   mem='ps ax -o %mem=--MEM--,user=---USER---,pid=---PID--,cmd | grep -v root | sort -Vr'
 
 ### convenience pipes (global)
 alias -g      G='| grep --color'
@@ -41,13 +28,27 @@ alias -g silent='&> /dev/null'
 
 # Docker stuff
 alias dc='docker compose'
+alias k='kubectl'
 
 ### info aliases
 alias ports='sudo netstat -uplant'        # list all TCP/UDP ports on the server
-alias    df='df -H'                       # report file system disk space usage
-alias    du='du -ch --summarize'          # print estimated disk usage
-alias uptime='uptime --pretty'            # show uptime output in 'pretty' time format
+alias df='df -H'                       # report file system disk space usage
 
+
+lsColorTag="--color=auto"
+rmAlias="rm -I"
+
+if we_are_mac; then
+    lsColorTag="-G"
+    rmAlias="rm"
+fi
+
+### convenience
+alias    ls="\ls -l -phF $lsColorTag"
+alias    ll="\ls -halp -F $lsColorTag"
+alias     l="\ls -p $lsColorTag"
+alias    la="\ls -pa $lsColorTag"
+alias    l.="\ls -halpd $lsColorTag .*"
 
 ### safety aliases
 alias    mv='mv -i'                       # prompts for safety
