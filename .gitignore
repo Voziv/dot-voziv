@@ -1,7 +1,7 @@
 voziv.conf
 gitconfig.private*
 !gitconfig.private.example
-ssh/voziv_config
+src/.voziv/ssh/voziv_config
 
 # ZSH
 *private*.zsh
