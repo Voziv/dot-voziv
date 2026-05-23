@@ -1,3 +1,7 @@
+# Claude Code
+.claude/worktrees/
+.claude/*.local.*
+
 .~lock.*
 *.orig
 .DS_Store
