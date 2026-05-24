@@ -30,13 +30,22 @@ let
         ;;
     esac
   '';
+
+  signingKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCovW9mR+cuHE+iC6hQR8gJD8DRZx4g4e7DKtXh4rFETM6WsKDra9zbLW8N/sHt6pJffgLrTMlo1CT1y6v8BbiXyV5fvUvd9YBV88ZfOJPdg8Ck1IK++Y0fnKJU20tTWIMf37kOedt+0GtZ9jXpHa+ys/FoPbO/fq97+31c0BKL64D+V0bJkCR9oWXMGWAf9iQBmGHQbBXddvAqwibyXaQgF61pifJPR/IzuNvH5LoTdM5S3cMEh33UgHExhi7mjeJEblYFAvrQaHiWsqTJeUZbVUCnjLCPCUwWnTjg8ddeImumWbXMRjkWttfPrj5+3DGGFGMARzERlPQdBpegLnr1W5IIU9Za8Gq86AMdYGVr//WwQaSn4rGW+6HqS4NCb1/khizMA92vrT3nwVB3NrTWPUcjDMd0UdUJ2vIuPTyXjXjaYc9TGCd4p3ccPkaGCn9WRWqdk+Sx/D4R47zjxRgMj2GQYJ6diDPI79nQ9AVpgXreTYlmIlcXiChjsq4Oqhnl/DCgpSAlmx6AKFlrs4v+O5Z+Xj6GoVyqroR7Y6/2uWIFHMozNEmhwcvslk2JVlUoM0nBL/ilWovwSOrO/WH9pkepapnuOIoKylhTlBUJ8qRVrXox80aKDqAYp7lm/9zOZQcsVqXoPWgPSdv0SM+qM58nPEvjV1kF2FgcjBouSw==";
+  userEmail = "25726+Voziv@users.noreply.github.com";
+
+  # Allowed-signers file lets `git log --show-signature` verify our own
+  # SSH-signed commits locally. namespaces="git" scopes the key to git.
+  allowedSigners = pkgs.writeText "git-allowed-signers" ''
+    ${userEmail} namespaces="git" ${signingKey}
+  '';
 in
 {
   programs.git = {
     enable = true;
 
     signing = {
-      key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCovW9mR+cuHE+iC6hQR8gJD8DRZx4g4e7DKtXh4rFETM6WsKDra9zbLW8N/sHt6pJffgLrTMlo1CT1y6v8BbiXyV5fvUvd9YBV88ZfOJPdg8Ck1IK++Y0fnKJU20tTWIMf37kOedt+0GtZ9jXpHa+ys/FoPbO/fq97+31c0BKL64D+V0bJkCR9oWXMGWAf9iQBmGHQbBXddvAqwibyXaQgF61pifJPR/IzuNvH5LoTdM5S3cMEh33UgHExhi7mjeJEblYFAvrQaHiWsqTJeUZbVUCnjLCPCUwWnTjg8ddeImumWbXMRjkWttfPrj5+3DGGFGMARzERlPQdBpegLnr1W5IIU9Za8Gq86AMdYGVr//WwQaSn4rGW+6HqS4NCb1/khizMA92vrT3nwVB3NrTWPUcjDMd0UdUJ2vIuPTyXjXjaYc9TGCd4p3ccPkaGCn9WRWqdk+Sx/D4R47zjxRgMj2GQYJ6diDPI79nQ9AVpgXreTYlmIlcXiChjsq4Oqhnl/DCgpSAlmx6AKFlrs4v+O5Z+Xj6GoVyqroR7Y6/2uWIFHMozNEmhwcvslk2JVlUoM0nBL/ilWovwSOrO/WH9pkepapnuOIoKylhTlBUJ8qRVrXox80aKDqAYp7lm/9zOZQcsVqXoPWgPSdv0SM+qM58nPEvjV1kF2FgcjBouSw==";
+      key = signingKey;
       signByDefault = true;
       format = "ssh";
       signer = "${opSshSign}";
@@ -47,8 +56,11 @@ in
     settings = {
       user = {
         name  = "Voz";
-        email = "25726+Voziv@users.noreply.github.com";
+        email = userEmail;
       };
+
+      # Verify our own SSH-signed commits locally.
+      gpg.ssh.allowedSignersFile = "${allowedSigners}";
 
       alias = {
         ap         = "add --patch";
