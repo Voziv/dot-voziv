@@ -25,6 +25,8 @@
     # Switch this machine's home-manager generation. Selects the flake config
     # matching `hostname -s` (voziv-pc / voziv-mac / lrobert-rh).
     hms = ''home-manager switch --flake "$HOME/dev/dot-voziv#$(hostname -s)"'';
+
+    grep = "grep --color=auto";
   };
 
   # Mirror the src/.voziv tree into ~/.voziv (the stow equivalent).
