@@ -1,8 +1,13 @@
+# Nix
+/result
+/result-*
+
+# Local-only configs
 voziv.conf
-gitconfig.private*
-!gitconfig.private.example
+
+# Private SSH config (rendered by voziv-sync-secrets)
 src/.voziv/ssh/voziv_config
 
-# ZSH
+# Other private shell snippets
 *private*.zsh
 *private*.sh

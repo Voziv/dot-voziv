@@ -32,6 +32,14 @@ append_path "$HOME/.rd/bin"
 append_path "$HOME/bin/nvim/bin"
 append_path "$HOME/.tfenv/bin"
 
+# JetBrains Toolbox shell scripts (idea, pycharm, …). Path differs per OS and
+# is only added when Toolbox is actually installed (append_path checks -d).
+if we_are_mac; then
+  append_path "$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
+else
+  append_path "$HOME/.local/share/JetBrains/Toolbox/scripts"
+fi
+
 
 
 # PNPM

@@ -1,3 +1,0 @@
-[submodule "src/.voziv/zsh.themes.d/pure"]
-	path = src/.voziv/zsh.themes.d/pure
-	url = https://github.com/sindresorhus/pure.git
