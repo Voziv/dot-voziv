@@ -43,5 +43,10 @@
 
     # gitignore_global is referenced by programs.git.settings.core.excludesfile.
     ".gitignore_global".source = "${self}/src/.gitignore_global";
+
+    # Powerlevel10k prompt config (sourced from home/zsh.nix). Managed here so
+    # the prompt is identical on every machine; `p10k configure` can't rewrite
+    # it while it's a store symlink — edit src/.p10k.zsh and switch instead.
+    ".p10k.zsh".source = "${self}/src/.p10k.zsh";
   };
 }
