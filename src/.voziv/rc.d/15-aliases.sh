@@ -18,14 +18,6 @@ fi
 
 alias  tmux="tmux -u"
 
-### convenience pipes (global)
-alias -g      G='| grep --color'
-alias -g   grev='| grep --color -v'
-alias -g      L='| less -R'
-alias -g      H='| head'
-alias -g  quiet='2> /dev/null'
-alias -g silent='&> /dev/null'
-
 # Docker stuff
 alias dc='docker compose'
 alias k='kubectl'

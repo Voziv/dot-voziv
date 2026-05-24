@@ -1,4 +1,4 @@
-{ pkgs, self, ... }:
+{ pkgs, ... }:
 {
   home.packages = with pkgs; [
     # Core CLI
@@ -26,11 +26,7 @@
     kubernetes-helm
     k9s
 
-    # 1Password CLI (used by voziv-sync-secrets)
+    # 1Password CLI (op signin, vault access)
     _1password-cli
-
-    # The sync script itself (built from this flake)
-    (self.packages.${pkgs.stdenv.hostPlatform.system}.voziv-sync-secrets or
-      (pkgs.callPackage ../pkgs/voziv-sync-secrets { }))
   ];
 }

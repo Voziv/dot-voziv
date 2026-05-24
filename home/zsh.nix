@@ -6,12 +6,6 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-    shellAliases = {
-      # Switch this machine's home-manager generation. Selects the flake config
-      # matching `hostname -s` (voziv-pc / voziv-mac / lrobert-rh).
-      hms = ''home-manager switch --flake "$HOME/dev/dot-voziv#$(hostname -s)"'';
-    };
-
     history = {
       size = 15000;
       save = 150000;
@@ -42,7 +36,6 @@
       bindkey '^Xe' edit-command-line
 
       export GPG_TTY=$(tty)
-      export EDITOR=nvim
 
       # Pure prompt — installed from nixpkgs, no submodule required.
       fpath+=("${pkgs.pure-prompt}/share/zsh/site-functions")
@@ -58,13 +51,9 @@
         done
       fi
 
-      # Zsh-specific modules. Files migrated to native nix modules
-      # (01-zshrc.zsh, 02-oh-my.zsh, 02-pure.zsh) are explicitly skipped.
+      # Zsh-specific modules (completions, asdf, global aliases, …).
       if [ -d "$HOME/.voziv/zshrc.d" ]; then
         for file in "$HOME/.voziv/zshrc.d"/*.zsh; do
-          case "$(basename "$file")" in
-            01-zshrc.zsh|02-oh-my.zsh|02-pure.zsh) continue ;;
-          esac
           [ -r "$file" ] && . "$file"
         done
       fi

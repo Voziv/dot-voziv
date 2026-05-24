@@ -60,9 +60,5 @@
           ];
         };
       };
-
-      packages = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ] (system: {
-        voziv-sync-secrets = (mkPkgs system).callPackage ./pkgs/voziv-sync-secrets { };
-      });
     };
 }
