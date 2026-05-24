@@ -1,58 +1,38 @@
-## Setting up mac
+## macOS — residual manual steps
 
-In the future I want to set this all up so nix handles all the setup and configuration
+Most of what used to live here is now declarative in `darwin/default.nix` and gets applied by `darwin-rebuild switch --flake .#voziv-mac`. This file covers only the things nix-darwin can't automate.
 
-### Settings
+### One-time, before first `darwin-rebuild`
 
-- Unbind open man page hotkey `CMD+Shift+M` (Keyboard Shortcuts -> Services -> Text -> Open Man Page in Terminal)
-- Unbind search man page hotkey `CMD+Shift+A` (Keyboard Shortcuts -> Services -> Text -> Search man Page Index in Terminal)
-- Unbind finder search hotkey `CMD+Shift+A` (Keyboard Shortcuts -> Spotlight -> Show Finder search window)
+1. Install Homebrew (nix-darwin uses it as a bridge for GUI apps not in nixpkgs):
+   ```sh
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
 
-### Apps to install
+2. Install Nix via the [Determinate Systems installer](https://github.com/DeterminateSystems/nix-installer) (see the main README).
 
-- 1Password
-- Discord
-- Jetbrains Toolbox
-- Logi Options+ (get offline installer, only used for MX Master mouse)
-- Magic-Switch
-- Spotify
-- Todoist
-- Zen Browser
+### After first switch
 
+1. **1Password SSH agent + biometric CLI**: open 1Password → Settings → Developer → enable both "Use the SSH agent" and "Integrate with 1Password CLI". This makes `op` usable without `op signin`, and SSH keys never leave 1Password.
 
-### QoL
+2. **Battery toolkit** (not in a regular brew formula — needs `--no-quarantine`):
+   ```sh
+   brew install mhaeuser/mhaeuser/battery-toolkit --no-quarantine
+   ```
 
-```shell
-brew tap mhaeuser/mhaeuser
-brew install battery-toolkit --no-quarantine
-```
+3. **Docker plugin paths**: add to `~/.docker/config.json` if it isn't already (consider declaring this in `home/default.nix` via `home.file.".docker/config.json"` if you want it tracked):
+   ```json
+   {
+     "cliPluginsExtraDirs": ["/opt/homebrew/lib/docker/cli-plugins"]
+   }
+   ```
+   Then start colima: `colima start && brew services start colima`.
 
-### Docker
+4. **JetBrains shortcuts**: the three keyboard-shortcut unbinds (CMD+Shift+M, CMD+Shift+A in Terminal Services and Spotlight finder search) are wired in `darwin/default.nix` under `system.defaults.CustomUserPreferences`. If a future macOS rev moves these keys around, a logout/login may be needed before the change takes effect.
 
-```shell
-brew install docker
-brew install docker-compose
-brew install docker-buildx
-brew install colima
+### Things still managed by hand (not configurable via nix-darwin)
 
-colima start
-colima start
-brew services start colima
-
-```
-
-Add the following to `~/.docker/config.json`
-```json
-"cliPluginsExtraDirs": [
-  "/opt/homebrew/lib/docker/cli-plugins"
-]
-```
-
-
-### PHP & Node
-
-```shell
-brew install php
-brew install composer
-brew install nvm
-```
+- 1Password's biometric unlock toggle
+- Logi Options+ device-specific configuration
+- iCloud account sign-in
+- Time Machine source/destinations
