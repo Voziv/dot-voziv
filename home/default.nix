@@ -8,6 +8,7 @@
     ./git.nix
     ./tmux.nix
     ./neovim.nix
+    ./claude.nix
   ];
 
   programs.home-manager.enable = true;
