@@ -13,9 +13,11 @@ Git identity and SSH host config are declared natively in `home/`. SSH keys them
 
 #### 1. Clone the repo
 
+Clone it wherever you like — `install.sh` records the location via a stable `~/.dotfiles` symlink so the day-to-day aliases don't care about the exact path.
+
 ```sh
-git clone git@github.com:voziv/dot-voziv ~/dev/dot-voziv
-cd ~/dev/dot-voziv
+git clone git@github.com:voziv/dot-voziv ~/dot-voziv
+cd ~/dot-voziv
 ```
 
 #### 2. Bootstrap
@@ -24,7 +26,7 @@ cd ~/dev/dot-voziv
 ./install.sh
 ```
 
-`install.sh` installs Nix ([Determinate Systems installer](https://github.com/DeterminateSystems/nix-installer), flakes on by default) if it's missing, then applies the flake output matching this host's short name (`hostname -s`):
+`install.sh` installs Nix ([Determinate Systems installer](https://github.com/DeterminateSystems/nix-installer), flakes on by default) if it's missing, creates `~/.dotfiles` → this checkout, then applies the flake output matching this host's short name (`hostname -s`):
 
 - a `homeConfigurations.<host>` → `home-manager switch`
 - a `darwinConfigurations.<host>` → `darwin-rebuild switch` (macOS system config)
@@ -47,13 +49,25 @@ You should see the pure prompt and have `dev-status`, `switch-voziv`, `vserver`,
 
 | Action | Command |
 |---|---|
-| Apply changes after editing nix files (home) | `hms` (alias → `home-manager switch --flake ~/dev/dot-voziv#$(hostname -s)`) |
-| Apply changes after editing nix files (Mac)  | `darwin-rebuild switch --flake ~/dev/dot-voziv#voziv-mac` |
+| Apply changes after editing nix files (Linux) | `hms` (alias → `home-manager switch --flake ~/.dotfiles#$(hostname -s)`) |
+| Apply changes after editing nix files (Mac)   | `hms` (alias → `sudo darwin-rebuild switch --flake ~/.dotfiles#$(hostname -s)`) |
 | Bootstrap / re-apply on any machine | `./install.sh` |
 | Bump pinned nixpkgs | `nix flake update` (then switch) |
 | View generations | `home-manager generations` |
 | Roll back | `home-manager switch --switch-generation <N>` |
 | Add a tool to the env | edit `home/packages.nix`, switch |
+
+#### Moving the repo
+
+The aliases resolve through `~/.dotfiles`, so moving the checkout is two steps:
+
+```sh
+mv ~/old/location/dot-voziv ~/new/location/dot-voziv
+cd ~/new/location/dot-voziv
+./install.sh   # refreshes ~/.dotfiles -> new location, re-applies the config
+```
+
+No edits to `home/*.nix` required. `hms` keeps working in any new shell after the rebuild.
 
 ---
 

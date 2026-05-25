@@ -22,11 +22,10 @@
     TZ = "America/Toronto";
   };
 
+  # Note: `hms` is defined per-platform in home/darwin.nix and home/linux.nix
+  # because it dispatches to darwin-rebuild on macs (where nix-darwin owns
+  # the activation) and home-manager on linux (standalone).
   home.shellAliases = {
-    # Switch this machine's home-manager generation. Selects the flake config
-    # matching `hostname -s` (voziv-pc / voziv-mac / lrobert-rh).
-    hms = ''home-manager switch --flake "$HOME/dev/dot-voziv#$(hostname -s)"'';
-
     grep = "grep --color=auto";
   };
 

@@ -41,6 +41,22 @@ flake_has() {
     | grep -q "\"${host}\""
 }
 
+# Maintain a stable $HOME/.dotfiles -> $repo_dir symlink so aliases like
+# `hms` keep resolving when this checkout is moved. Re-running install.sh
+# from the new location refreshes the symlink.
+link_dotfiles() {
+  local target="$HOME/.dotfiles"
+  if [ -L "$target" ] && [ "$(readlink "$target")" = "$repo_dir" ]; then
+    return
+  fi
+  if [ -e "$target" ] && [ ! -L "$target" ]; then
+    log "Refusing to overwrite non-symlink at $target. Move it aside and re-run."
+    exit 1
+  fi
+  log "Linking $target -> $repo_dir"
+  ln -snf "$repo_dir" "$target"
+}
+
 apply() {
   if flake_has darwinConfigurations; then
     log "Applying nix-darwin config: ${host}"
@@ -66,5 +82,6 @@ EOF
 }
 
 install_nix
+link_dotfiles
 apply
 log "Done. Open a new shell (e.g. 'exec zsh') to load the new environment."
