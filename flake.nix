@@ -30,6 +30,29 @@
           modules = [ ./home ] ++ modules;
           extraSpecialArgs = { username = user; inherit self; };
         };
+
+      mkDarwin = { user ? username, modules }:
+        nix-darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          specialArgs = { username = user; inherit self; };
+          modules = [
+            ./darwin
+            home-manager.darwinModules.home-manager
+            {
+              nixpkgs.config.allowUnfree = true;
+              home-manager = {
+                useGlobalPkgs       = true;
+                useUserPackages     = true;
+                # Rename pre-existing files to .backup instead of failing.
+                backupFileExtension = "backup";
+                extraSpecialArgs    = { username = user; inherit self; };
+                users.${user} = {
+                  imports = [ ./home ./home/darwin.nix ];
+                };
+              };
+            }
+          ] ++ modules;
+        };
     in {
       # Keyed by short hostname (`hostname -s`) so `home-manager switch --flake
       # .#$(hostname -s)` — and the `hms` alias — auto-select the right machine.
@@ -40,25 +63,8 @@
       };
 
       darwinConfigurations = {
-        "voziv-mac" = nix-darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          specialArgs = { inherit username self; };
-          modules = [
-            ./darwin
-            home-manager.darwinModules.home-manager
-            {
-              nixpkgs.config.allowUnfree = true;
-              home-manager = {
-                useGlobalPkgs   = true;
-                useUserPackages = true;
-                extraSpecialArgs = { inherit username self; };
-                users.${username} = {
-                  imports = [ ./home ./home/darwin.nix ];
-                };
-              };
-            }
-          ];
-        };
+        "voziv-mac"  = mkDarwin { modules = [ ./darwin/hosts/voziv-mac.nix ]; };
+        "lrobert-rh" = mkDarwin { user = "lee.robert"; modules = [ ./darwin/hosts/lrobert-rh.nix ]; };
       };
     };
 }

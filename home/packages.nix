@@ -25,6 +25,13 @@
     kubectl
     kubernetes-helm
     k9s
+    argocd
+
+    # Languages
+    go
+
+    # Crypto / signing
+    gnupg
 
     # 1Password CLI (op signin, vault access)
     _1password-cli

@@ -1,7 +1,8 @@
 { pkgs, username, ... }:
 {
-  # Identify yourself to nix.
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  # Determinate Nix manages the Nix daemon itself, so opt nix-darwin out of
+  # managing it. Flakes + nix-command are on by default in Determinate.
+  nix.enable = false;
   system.stateVersion = 5;
 
   # nix-darwin needs to know who the primary user is for some defaults.
@@ -81,6 +82,8 @@
   # ─── Homebrew bridge (apps not in nixpkgs) ───────────────────────────────
   # nix-darwin doesn't install Homebrew itself; install it once manually:
   #   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  #
+  # Per-host cask/brew/tap lists live in ./hosts/<host>.nix.
   homebrew = {
     enable = true;
     onActivation = {
@@ -88,31 +91,6 @@
       cleanup = "zap";
       upgrade = true;
     };
-
-    casks = [
-      "1password"
-      "1password-cli"
-      "discord"
-      "jetbrains-toolbox"
-      "logi-options+"
-      "magic-switch"
-      "spotify"
-      "todoist"
-      "zen-browser"
-    ];
-
-    brews = [
-      "colima"
-      "docker"
-      "docker-compose"
-      "docker-buildx"
-      "composer"
-      "nvm"
-    ];
-
-    taps = [
-      "mhaeuser/mhaeuser"
-    ];
   };
 
   # Battery toolkit comes from a tap and requires --no-quarantine. Add
@@ -131,8 +109,7 @@
     echo "setting up ~/Applications/Nix Apps..." >&2
     rm -rf "$HOME/Applications/Nix Apps"
     mkdir -p "$HOME/Applications/Nix Apps"
-    for app in $(find $HOME/.nix-profile/Applications -maxdepth 1 -type l 2>/dev/null); do
-      ln -s "$app" "$HOME/Applications/Nix Apps/"
-    done
+    find "$HOME/.nix-profile/Applications" -maxdepth 1 -type l \
+      -exec ln -s {} "$HOME/Applications/Nix Apps/" \; 2>/dev/null || true
   '';
 }
