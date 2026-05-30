@@ -44,6 +44,23 @@ in
         command = "bash ${claudeDir}/statusline-command.sh";
         padding = 1;
       };
+
+      # Official plugins, enabled declaratively. We can't use the module's
+      # `plugins` option here because it wraps the claude-code binary and asserts
+      # `package != null`, but this host installs the binary outside Nix. Instead
+      # we flip them on via settings; the `claude-plugins-official` marketplace is
+      # auto-installed by Claude Code on first run.
+      enabledPlugins =
+        lib.genAttrs
+          (map (plugin: "${plugin}@claude-plugins-official") [
+            "frontend-design"
+            "superpowers"
+            "code-review"
+            "code-simplifier"
+            "feature-dev"
+            "pr-review-toolkit"
+          ])
+          (_: true);
     };
 
     # ~/.claude/CLAUDE.md = shared instructions + this machine's tail.
