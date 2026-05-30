@@ -3,7 +3,8 @@
 # Single line: Model | tokens | %used | %remain | think | 5h bar @reset | 7d bar @reset | extra
 
 set -f  # disable globbing
-VERSION="1.4.3"
+VERSION="1.4.4"
+STATUSLINE_CHECK_UPDATES=false
 
 input=$(cat)
 
@@ -109,6 +110,28 @@ elif [ -f "$settings_path" ]; then
     [ -n "$effort_val" ] && effort_level="$effort_val"
 fi
 [ -z "$effort_level" ] && effort_level="medium"
+
+# ===== Claude CLI version (cached, 1h TTL) =====
+cli_version_cache="/tmp/claude/statusline-cli-version"
+cli_version=""
+cli_version_max_age=3600
+
+if [ -f "$cli_version_cache" ]; then
+    cv_mtime=$(stat -c %Y "$cli_version_cache" 2>/dev/null || stat -f %m "$cli_version_cache" 2>/dev/null)
+    cv_now=$(date +%s)
+    cv_age=$(( cv_now - cv_mtime ))
+    if [ "$cv_age" -lt "$cli_version_max_age" ]; then
+        cli_version=$(cat "$cli_version_cache" 2>/dev/null)
+    fi
+fi
+
+if [ -z "$cli_version" ]; then
+    cli_version=$(claude --version 2>/dev/null | awk '{print $1}')
+    if [ -n "$cli_version" ]; then
+        mkdir -p /tmp/claude 2>/dev/null
+        echo "$cli_version" > "$cli_version_cache"
+    fi
+fi
 
 # ===== Build single-line output =====
 out=""
@@ -336,8 +359,8 @@ format_reset_time() {
             formatted=$(date -j -r "$epoch" +"%H:%M" 2>/dev/null)
             ;;
         datetime)
-            formatted=$(date -d "@$epoch" +"%b %-d, %H:%M" 2>/dev/null) || \
-            formatted=$(date -j -r "$epoch" +"%b %-d, %H:%M" 2>/dev/null)
+            formatted=$(date -d "@$epoch" +"%a %b %-d, %H:%M" 2>/dev/null) || \
+            formatted=$(date -j -r "$epoch" +"%a %b %-d, %H:%M" 2>/dev/null)
             ;;
         *)
             formatted=$(date -d "@$epoch" +"%b %-d" 2>/dev/null) || \
@@ -390,7 +413,7 @@ if $effective_builtin; then
         seven_day_color=$(usage_color "$seven_day_pct")
         out+="${sep}${white}7d${reset} ${seven_day_color}${seven_day_pct}%${reset}"
         if [ -n "$builtin_seven_day_reset" ] && [ "$builtin_seven_day_reset" != "null" ]; then
-            seven_day_reset=$(date -j -r "$builtin_seven_day_reset" +"%b %-d, %H:%M" 2>/dev/null || date -d "@$builtin_seven_day_reset" +"%b %-d, %H:%M" 2>/dev/null)
+            seven_day_reset=$(date -j -r "$builtin_seven_day_reset" +"%a %b %-d, %H:%M" 2>/dev/null || date -d "@$builtin_seven_day_reset" +"%a %b %-d, %H:%M" 2>/dev/null)
             [ -n "$seven_day_reset" ] && out+=" ${dim}@${seven_day_reset}${reset}"
         fi
     fi
@@ -447,44 +470,49 @@ else
 fi
 
 # ===== Update check (cached, 24h TTL) =====
-version_cache_file="/tmp/claude/statusline-version-cache.json"
-version_cache_max_age=86400  # 24 hours
-
-version_needs_refresh=true
-version_data=""
-
-if [ -f "$version_cache_file" ]; then
-    vc_mtime=$(stat -c %Y "$version_cache_file" 2>/dev/null || stat -f %m "$version_cache_file" 2>/dev/null)
-    vc_now=$(date +%s)
-    vc_age=$(( vc_now - vc_mtime ))
-    if [ "$vc_age" -lt "$version_cache_max_age" ]; then
-        version_needs_refresh=false
-    fi
-    version_data=$(cat "$version_cache_file" 2>/dev/null)
-fi
-
-if $version_needs_refresh; then
-    touch "$version_cache_file" 2>/dev/null
-    vc_response=$(curl -s --max-time 5 \
-        -H "Accept: application/vnd.github+json" \
-        "https://api.github.com/repos/daniel3303/ClaudeCodeStatusLine/releases/latest" 2>/dev/null)
-    if [ -n "$vc_response" ] && echo "$vc_response" | jq -e '.tag_name' >/dev/null 2>&1; then
-        version_data="$vc_response"
-        echo "$vc_response" > "$version_cache_file"
-    elif [ ! -s "$version_cache_file" ]; then
-        # Fetch failed and the cache has no usable content — drop the empty
-        # stampede lock so the next render retries instead of the fresh mtime
-        # suppressing update checks for the full 24h TTL.
-        rm -f "$version_cache_file" 2>/dev/null
-    fi
-fi
-
+# Set STATUSLINE_CHECK_UPDATES=false to disable the update check (no network calls).
 update_line=""
-if [ -n "$version_data" ]; then
-    latest_tag=$(echo "$version_data" | jq -r '.tag_name // empty')
-    if [ -n "$latest_tag" ] && version_gt "$latest_tag" "$VERSION"; then
-        update_line="\n${dim}Update available: ${latest_tag} → Tell Claude: \"Find my installed status bar and update it\"${reset}"
+if [ "${STATUSLINE_CHECK_UPDATES:-true}" != "false" ]; then
+    version_cache_file="/tmp/claude/statusline-version-cache.json"
+    version_cache_max_age=86400  # 24 hours
+
+    version_needs_refresh=true
+    version_data=""
+
+    if [ -f "$version_cache_file" ]; then
+        vc_mtime=$(stat -c %Y "$version_cache_file" 2>/dev/null || stat -f %m "$version_cache_file" 2>/dev/null)
+        vc_now=$(date +%s)
+        vc_age=$(( vc_now - vc_mtime ))
+        if [ "$vc_age" -lt "$version_cache_max_age" ]; then
+            version_needs_refresh=false
+        fi
+        version_data=$(cat "$version_cache_file" 2>/dev/null)
     fi
+
+    if $version_needs_refresh; then
+        touch "$version_cache_file" 2>/dev/null
+        vc_response=$(curl -s --max-time 5 \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/daniel3303/ClaudeCodeStatusLine/releases/latest" 2>/dev/null)
+        if [ -n "$vc_response" ] && echo "$vc_response" | jq -e '.tag_name' >/dev/null 2>&1; then
+            version_data="$vc_response"
+            echo "$vc_response" > "$version_cache_file"
+        elif [ ! -s "$version_cache_file" ]; then
+            rm -f "$version_cache_file" 2>/dev/null
+        fi
+    fi
+
+    if [ -n "$version_data" ]; then
+        latest_tag=$(echo "$version_data" | jq -r '.tag_name // empty')
+        if [ -n "$latest_tag" ] && version_gt "$latest_tag" "$VERSION"; then
+            update_line="\n${dim}Update available: ${latest_tag} → Tell Claude: \"Find my installed status bar and update it\"${reset}"
+        fi
+    fi
+fi
+
+# Append CLI version as last segment
+if [ -n "$cli_version" ]; then
+    out+=" ${dim}|${reset} ${orange}v${cli_version}${reset}"
 fi
 
 # Output
