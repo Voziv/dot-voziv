@@ -69,7 +69,7 @@ in
         co         = "checkout";
         fap        = "fetch --all --prune";
         fp         = "fetch --prune";
-        gone       = "!for branch in $(git branch -vv | grep ': gone]' | grep -v $(git branch --show-current) | awk '{print $1}'); do git branch -D $branch; done";
+        gone       = ''!f() { git for-each-ref --format='%(refname:short) %(upstream:track,nobracket) %(worktreepath)' refs/heads | { deleted=0; stale=0; while read -r branch track wt; do [ "$track" = gone ] || continue; if [ -n "$wt" ]; then echo "skip: $branch (worktree: $wt)"; stale=$((stale+1)); else git branch -D "$branch" && deleted=$((deleted+1)); fi; done; echo "summary: $deleted deleted, $stale gone branch(es) still in worktrees"; }; }; f'';
         l          = "log --date=short --pretty=format:'%C(bold blue)%cd %Creset%C(red)%h%Creset%C(auto)%d %Creset%C(normal)%s %Creset%C(bold blue)(%Creset%C(yellow)%an %Creset%C(bold blue)%cr)%Creset' --color --graph --decorate";
         last       = "log -1 HEAD";
         poo        = "push";
