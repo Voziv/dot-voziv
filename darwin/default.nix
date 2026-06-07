@@ -90,6 +90,10 @@
       autoUpdate = true;
       cleanup = "zap";
       upgrade = true;
+      # Homebrew 5.1.x refuses `brew bundle --cleanup` without explicit
+      # confirmation; --force-cleanup performs the zap non-interactively so
+      # activation doesn't abort. Drop this once nix-darwin handles it.
+      extraFlags = [ "--force-cleanup" ];
     };
   };
 
