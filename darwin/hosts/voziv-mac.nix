@@ -13,6 +13,7 @@
       "jordanbaird-ice"
       "keepingyouawake"
       "linearmouse"
+      "notunes"
       "orbstack"
       "spotify"
       "todoist-app"
