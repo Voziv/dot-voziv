@@ -2,7 +2,6 @@
 {
   homebrew = {
     taps = [
-      "mhaeuser/mhaeuser"
       "coleam00/archon"
     ];
 
