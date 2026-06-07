@@ -3,6 +3,7 @@
   homebrew = {
     taps = [
       "mhaeuser/mhaeuser"
+      "coleam00/archon"
     ];
 
     casks = [
@@ -22,6 +23,7 @@
     brews = [
       "composer"
       "nvm"
+      "coleam00/archon/archon"
     ];
   };
 }
