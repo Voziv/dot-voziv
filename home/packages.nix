@@ -32,6 +32,7 @@
 
     # Languages
     go
+    bun
 
     # Crypto / signing
     gnupg
