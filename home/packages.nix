@@ -18,6 +18,9 @@
     direnv
     nix-direnv
 
+    # Closure diff viewer — used by the `hms` preview before switching
+    nvd
+
     # Languages / runtime managers (NVM stays user-managed via rc.d/20-nvm.sh)
     asdf-vm
 
