@@ -7,12 +7,14 @@
     ];
 
     casks = [
+      "gcloud-cli"
       "ghostty"
-      "jetbrains-toolbox"
       "jordanbaird-ice"
+      "kdiff3"
       "keepingyouawake"
       "linearmouse"
-      "spotify"
+      "notunes"
+      "boltops-tools/software/terraspace"
     ];
 
     # cleanup = "zap" (darwin/default.nix) uninstalls any brew not listed here.
