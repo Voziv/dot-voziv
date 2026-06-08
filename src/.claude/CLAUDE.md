@@ -1,6 +1,3 @@
-**Current date**: 2026-05-23
-
-
 - **Language:** English only - all code, comments, docs, examples, commits, configs, errors, tests
 - Criticism is welcome.
   - Please tell me when I am wrong or mistaken, or even when you think I might be wrong or mistaken.
