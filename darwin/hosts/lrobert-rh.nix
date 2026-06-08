@@ -89,5 +89,10 @@
       IdentityAgent = "SSH_AUTH_SOCK";
       SetEnv = { TERM = "xterm-256color"; };
     });
+
+    # colima writes ~/.colima/ssh_config (Host colima …) for `ssh colima` and
+    # colima/docker SSH workflows. This Include was in the pre-nix ~/.ssh/config;
+    # ssh ignores it if the file is absent (colima not started).
+    programs.ssh.includes = [ "${config.home.homeDirectory}/.colima/ssh_config" ];
   };
 }
