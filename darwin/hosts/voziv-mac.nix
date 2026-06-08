@@ -7,6 +7,7 @@
 
     casks = [
       "1password"
+      "astro-editor"
       "discord"
       "ghostty"
       "jetbrains-toolbox"
