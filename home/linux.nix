@@ -1,4 +1,4 @@
-{ username, lib, ... }:
+{ username, lib, pkgs, ... }:
 let
   # Linux uses standalone home-manager (no nix-darwin equivalent, no brew).
   # The $HOME/.dotfiles symlink is maintained by install.sh; moving this
@@ -34,6 +34,10 @@ in
 {
   home.username = username;
   home.homeDirectory = "/home/${username}";
+
+  # 1Password CLI — installed here (and in darwin/hosts/voziv-mac.nix) rather
+  # than shared home/packages.nix, since not every machine runs 1Password.
+  home.packages = [ pkgs._1password-cli ];
 
   programs.zsh.initContent = lib.mkOrder 1500 hmsFunction;
   programs.bash.initExtra = hmsFunction;

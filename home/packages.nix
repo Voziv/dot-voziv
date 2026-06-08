@@ -36,8 +36,7 @@
 
     # Crypto / signing
     gnupg
-
-    # 1Password CLI (op signin, vault access)
-    _1password-cli
   ];
+  # 1Password CLI (op) is installed per-host where 1Password is actually used
+  # (darwin/hosts/voziv-mac.nix, home/linux.nix) — not on machines without it.
 }

@@ -2,6 +2,7 @@
 .claude/worktrees/
 .claude/*.local.*
 .claude/scheduled_tasks.lock
+CLAUDE.local.md
 
 .~lock.*
 *.orig

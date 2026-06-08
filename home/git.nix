@@ -88,6 +88,12 @@ in
       };
       tag.forceSignAnnotated = true;
       push.default = "simple";
+
+      # Use the gh CLI as the credential helper for HTTPS GitHub remotes. The
+      # empty first value clears any helper inherited from a less-specific
+      # scope before appending gh. gh is on PATH via home/packages.nix.
+      "credential \"https://github.com\"".helper = [ "" "!gh auth git-credential" ];
+      "credential \"https://gist.github.com\"".helper = [ "" "!gh auth git-credential" ];
       merge.tool = "kdiff3";
       mergetool.prompt = false;
       "mergetool \"p4merge\"" = {
