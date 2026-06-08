@@ -18,6 +18,50 @@ let
   perHostContext =
     lib.optionalString (builtins.pathExists hostContextFile)
       ("\n" + builtins.readFile hostContextFile);
+
+  mkEnabledPlugins = plugins:
+    lib.genAttrs (map (plugin: "${plugin}@claude-plugins-official") plugins) (_: true);
+
+  # Shared settings → ~/.claude/settings.json on every machine.
+  baseSettings = {
+    theme = "dark";
+    skipAutoPermissionPrompt = true;
+    attribution = {
+      commit = "";
+      pr = "";
+    };
+    permissions.defaultMode = "auto";
+    statusLine = {
+      type = "command";
+      command = "bash ${claudeDir}/statusline-command.sh";
+      padding = 1;
+    };
+    enabledPlugins = mkEnabledPlugins [
+      "frontend-design"
+      "superpowers"
+      "code-review"
+      "code-simplifier"
+      "feature-dev"
+      "pr-review-toolkit"
+    ];
+  };
+
+  # Per-machine settings, deep-merged over baseSettings (lib.recursiveUpdate):
+  # nested attrsets merge — so a host's enabledPlugins ADD to the shared set —
+  # while scalars like `theme` override. Give a machine its own slice by adding
+  # a hostKey entry; absent hosts inherit baseSettings unchanged.
+  perHostSettings = {
+    lrobert-rh = {
+      # Ratehub work laptop: auto theme and the extra plugins used for work.
+      theme = "auto";
+      enabledPlugins = mkEnabledPlugins [
+        "zapier"
+        "typescript-lsp"
+        "cloudflare"
+        "datadog"
+      ];
+    };
+  };
 in
 {
   programs.claude-code = {
@@ -28,40 +72,16 @@ in
     # install; assertions only fire for MCP/LSP/plugin features, unused here.)
     package = null;
 
-    # Generated to ~/.claude/settings.json. This becomes a read-only store
-    # symlink, so interactive /config or theme edits won't persist — change them
-    # here and `hms` instead.
-    settings = {
-      theme = "dark";
-      skipAutoPermissionPrompt = true;
-      attribution = {
-        commit = "";
-        pr = "";
-      };
-      permissions.defaultMode = "auto";
-      statusLine = {
-        type = "command";
-        command = "bash ${claudeDir}/statusline-command.sh";
-        padding = 1;
-      };
-
-      # Official plugins, enabled declaratively. We can't use the module's
-      # `plugins` option here because it wraps the claude-code binary and asserts
-      # `package != null`, but this host installs the binary outside Nix. Instead
-      # we flip them on via settings; the `claude-plugins-official` marketplace is
-      # auto-installed by Claude Code on first run.
-      enabledPlugins =
-        lib.genAttrs
-          (map (plugin: "${plugin}@claude-plugins-official") [
-            "frontend-design"
-            "superpowers"
-            "code-review"
-            "code-simplifier"
-            "feature-dev"
-            "pr-review-toolkit"
-          ])
-          (_: true);
-    };
+    # Generated to ~/.claude/settings.json (baseSettings + this machine's
+    # overrides). This becomes a read-only store symlink, so interactive
+    # /config or theme edits won't persist — change baseSettings/perHostSettings
+    # above and `hms` instead.
+    #
+    # Plugins are enabled via settings.enabledPlugins rather than the module's
+    # `plugins` option, which wraps the claude-code binary and asserts
+    # `package != null` (this host installs the binary outside Nix). The
+    # `claude-plugins-official` marketplace is auto-installed on first run.
+    settings = lib.recursiveUpdate baseSettings (perHostSettings.${hostKey} or {});
 
     # ~/.claude/CLAUDE.md = shared instructions + this machine's tail.
     context = builtins.readFile "${self}/src/.claude/CLAUDE.md" + perHostContext;
