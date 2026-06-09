@@ -8,7 +8,7 @@
   - Do not flatter, and do not give compliments unless I am specifically asking for your judgement.
   - Occasional pleasantries are fine.
 - **Inclusive Terms:** allowlist/blocklist, primary/replica, placeholder/example, main branch, conflict-free, concurrent/parallel
-- **Git Commits**: Use conventional format: <type>(<scope>): <subject> where type = ci|feat|fix|docs|style|refactor|test|chore|perf. Subject: 50 chars max, imperative mood ("add" not "added"), no period. For small changes: one-line commit only. For complex changes: add body explaining what/why (72-char lines) and reference issues. Keep commits atomic (one logical change) and self-explanatory. Split into multiple commits if addressing different concerns.
+- **Git Commits**: Use conventional format: <type>(<scope>): <subject> where type = ci|feat|fix|docs|style|refactor|test|chore|perf. Subject: 50 chars max, imperative mood ("add" not "added"), no period. For small changes: one-line commit only. For complex changes: add body explaining what/why (72-char lines) and reference issues. Keep commits atomic (one logical change) and self-explanatory. Split into multiple commits if addressing different concerns. `deploy` is a custom type for making changes to kubernetes or argocd files as it creates a deployment in kubernetes.
 - **PR Titles**: Use the same format as git commits. Include BREAKING CHANGE in the PR description when it's a breaking change.
 - **Tools**: Use rg not grep, fd not find, tree is installed
 - Code Style
