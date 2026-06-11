@@ -26,6 +26,7 @@
       "aiven-client"
       "autoconf"
       "automake"
+      "awscli"
       "bash"
       "cloud-sql-proxy"
       "colima"
