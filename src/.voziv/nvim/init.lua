@@ -54,11 +54,9 @@ require('lazy').setup({
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
-      -- Automatically install LSPs to stdpath for neovim.
-      -- Pinned to 1.x: mason-lspconfig 2.0 removed `setup_handlers` (used
-      -- below) and requires mason 2.0, so both stay on their 1.x lines.
-      { 'williamboman/mason.nvim', version = '^1.0', config = true },
-      { 'williamboman/mason-lspconfig.nvim', version = '^1.0' },
+      -- Automatically install LSPs to stdpath for neovim
+      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -524,10 +522,7 @@ require('which-key').add {
   { '<leader>h', group = 'Git [H]unk', mode = 'v' },
 }
 
--- mason-lspconfig requires that these setup functions are called in this order
--- before setting up the servers.
 require('mason').setup()
-require('mason-lspconfig').setup()
 
 -- Enable the following language servers
 --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -555,27 +550,25 @@ local servers = {
   },
 }
 
--- nvim-cmp supports additional completion capabilities, so broadcast that to servers
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+-- Configure servers via Neovim's native LSP framework (0.11+). The wildcard
+-- entry broadcasts nvim-cmp completion capabilities and our shared on_attach
+-- to every server; per-server entries layer on the `settings` tables above.
+vim.lsp.config('*', {
+  capabilities = require('cmp_nvim_lsp').default_capabilities(),
+  on_attach = on_attach,
+})
+for server_name, settings in pairs(servers) do
+  vim.lsp.config(server_name, {
+    settings = settings,
+    filetypes = settings.filetypes,
+  })
+end
 
--- Ensure the servers above are installed
-local mason_lspconfig = require 'mason-lspconfig'
-
-mason_lspconfig.setup {
+-- mason-lspconfig installs the servers above; vim.lsp.enable then starts them.
+require('mason-lspconfig').setup {
   ensure_installed = vim.tbl_keys(servers),
 }
-
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
-  end,
-}
+vim.lsp.enable(vim.tbl_keys(servers))
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
