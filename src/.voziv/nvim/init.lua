@@ -54,9 +54,11 @@ require('lazy').setup({
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
-      -- Automatically install LSPs to stdpath for neovim
-      { 'williamboman/mason.nvim', config = true },
-      'williamboman/mason-lspconfig.nvim',
+      -- Automatically install LSPs to stdpath for neovim.
+      -- Pinned to 1.x: mason-lspconfig 2.0 removed `setup_handlers` (used
+      -- below) and requires mason 2.0, so both stay on their 1.x lines.
+      { 'williamboman/mason.nvim', version = '^1.0', config = true },
+      { 'williamboman/mason-lspconfig.nvim', version = '^1.0' },
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -218,10 +220,13 @@ require('lazy').setup({
   },
 
   {
-    -- Highlight, edit, and navigate code
+    -- Highlight, edit, and navigate code.
+    -- Pinned to master: the main branch is a rewrite that drops the
+    -- `nvim-treesitter.configs` module this config configures below.
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
-      'nvim-treesitter/nvim-treesitter-textobjects',
+      { 'nvim-treesitter/nvim-treesitter-textobjects', branch = 'master' },
+    branch = 'master',
     },
     build = ':TSUpdate',
   },
