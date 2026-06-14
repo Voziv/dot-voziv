@@ -2,7 +2,6 @@
 {
   homebrew = {
     taps = [
-      "knight42/tap"
       "boltops-tools/software"
     ];
 
@@ -37,7 +36,6 @@
       "docker-compose"
       "excalidraw-converter"
       "ffmpeg"
-      "knight42/tap/krelay"
       "libksba"
       "libyaml"
       "nvm"
