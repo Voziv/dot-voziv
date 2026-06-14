@@ -26,6 +26,11 @@ let
   baseSettings = {
     theme = "dark";
     skipAutoPermissionPrompt = true;
+    voice = {
+      enabled = true;
+      mode = "hold";
+      autoSubmit = true;
+    };
     attribution = {
       commit = "";
       pr = "";
