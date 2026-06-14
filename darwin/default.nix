@@ -88,12 +88,14 @@
     enable = true;
     onActivation = {
       autoUpdate = true;
-      cleanup = "zap";
       upgrade = true;
-      # Homebrew 5.1.x refuses `brew bundle --cleanup` without explicit
-      # confirmation; --force-cleanup performs the zap non-interactively so
-      # activation doesn't abort. Drop this once nix-darwin handles it.
-      extraFlags = [ "--force-cleanup" ];
+      # Homebrew 6.x deprecated the bare `--cleanup` flag that nix-darwin emits
+      # for cleanup = "zap"/"uninstall". Keep nix-darwin's cleanup off and drive
+      # the zap ourselves with the supported `--force-cleanup --zap` flags, so
+      # orphan brews are still removed without the deprecation warning. Revisit
+      # once nix-darwin moves to the `brew bundle cleanup` subcommand.
+      cleanup = "none";
+      extraFlags = [ "--force-cleanup" "--zap" ];
     };
   };
 
