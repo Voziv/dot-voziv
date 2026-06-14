@@ -31,6 +31,9 @@ let
       pr = "";
     };
     permissions.defaultMode = "auto";
+    env = {
+      CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY = "1";
+    };
     statusLine = {
       type = "command";
       command = "bash ${claudeDir}/statusline-command.sh";
