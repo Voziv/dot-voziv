@@ -68,6 +68,7 @@
     # Path is ~/.homebrew/trust.json because XDG_CONFIG_HOME is unset here; brew
     # would otherwise read $XDG_CONFIG_HOME/homebrew/trust.json.
     home.file.".homebrew/trust.json".text = builtins.toJSON {
+      trustedtaps = [ "boltops-tools/software" ];
       trustedcasks = [ "boltops-tools/software/terraspace" ];
     };
 
