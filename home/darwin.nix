@@ -5,13 +5,11 @@ let
   # The $HOME/.dotfiles symlink is maintained by install.sh; moving this
   # checkout and re-running install.sh refreshes it.
   #
-  # `hms` builds first and previews before switching:
-  #   - `nvd diff` shows nix store package/version changes.
-  #   - `brew bundle cleanup --zap` (dry run) shows what Homebrew will
-  #     uninstall, since brew lives outside the nix store and is invisible to
-  #     nvd. Anything not in darwin/hosts/<host>.nix gets zapped on switch, so
-  #     add what you want to keep before answering yes.
-  # Defined as a function (portable across bash + zsh) so it can prompt.
+  # `hms` builds first, shows an `nvd diff` of nix store package/version
+  # changes, then applies directly. Homebrew lives outside the nix store and
+  # isn't previewed here; anything not in darwin/hosts/<host>.nix gets zapped
+  # on switch.
+  # Defined as a function (portable across bash + zsh).
   hmsFunction = ''
     hms() {
       local host
@@ -20,20 +18,8 @@ let
       echo
       echo "── nix store changes ─────────────────────────────"
       nvd diff /run/current-system ./result
-      local brewfile
-      brewfile="$(grep -o "/nix/store/[^']*Brewfile" ./result/activate 2>/dev/null | head -1)"
-      if [ -n "$brewfile" ]; then
-        echo
-        echo "── homebrew (dry run — what 'zap' will uninstall) ─"
-        brew bundle cleanup --zap --file="$brewfile"
-      fi
       echo
-      printf "Apply these changes? [y/N] "
-      read REPLY
-      case "$REPLY" in
-        [yY]*) sudo darwin-rebuild switch --flake "$HOME/.dotfiles#$host" ;;
-        *) echo "Aborted — nothing applied."; rm -f result; return 1 ;;
-      esac
+      sudo darwin-rebuild switch --flake "$HOME/.dotfiles#$host"
       rm -f result
     }
   '';
