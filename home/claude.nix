@@ -93,6 +93,7 @@ let
         "typescript-lsp"
         "cloudflare"
         "datadog"
+        "slack"
       ];
     };
   };
