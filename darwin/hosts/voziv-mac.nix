@@ -15,6 +15,7 @@
       "1password"
       "astro-editor"
       "discord"
+      "ghostpepper"
       "ghostty"
       "jetbrains-toolbox"
       "jordanbaird-ice"
