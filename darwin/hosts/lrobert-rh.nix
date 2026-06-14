@@ -14,7 +14,6 @@
       "keepingyouawake"
       "linearmouse"
       "notunes"
-      "wispr-flow"
       "boltops-tools/software/terraspace"
     ];
 

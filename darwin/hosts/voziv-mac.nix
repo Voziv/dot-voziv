@@ -24,7 +24,6 @@
       "orbstack"
       "spotify"
       "todoist-app"
-      "wispr-flow"
       "zen"
     ];
 
