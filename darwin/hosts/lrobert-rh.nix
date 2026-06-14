@@ -7,6 +7,7 @@
 
     casks = [
       "gcloud-cli"
+      "ghostpepper"
       "ghostty"
       "jordanbaird-ice"
       "kdiff3"
