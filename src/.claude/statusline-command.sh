@@ -137,13 +137,31 @@ fi
 out=""
 out+="${blue}${model_name}${reset}"
 
-# Current working directory
+# Current working directory: <repo>(#<worktree>)@<branch>, where the worktree
+# segment appears only inside a linked git worktree.
 cwd=$(echo "$input" | jq -r '.cwd // empty')
 if [ -n "$cwd" ]; then
-    display_dir="${cwd##*/}"
     git_branch=$(git -C "${cwd}" rev-parse --abbrev-ref HEAD 2>/dev/null)
+    abs_git_dir=$(git -C "${cwd}" rev-parse --absolute-git-dir 2>/dev/null)
     out+=" ${dim}|${reset} "
-    out+="${cyan}${display_dir}${reset}"
+    if [ -n "$abs_git_dir" ]; then
+        # Linked worktrees keep their git dir under <repo>/.git/worktrees/<name>,
+        # so the shared repo dir is everything before "/worktrees/".
+        case "$abs_git_dir" in
+            */worktrees/*) common_git_dir="${abs_git_dir%%/worktrees/*}" ;;
+            *)             common_git_dir="$abs_git_dir" ;;
+        esac
+        repo_name=$(basename "$(dirname "$common_git_dir")")
+        out+="${cyan}${repo_name}${reset}"
+        case "$abs_git_dir" in
+            */worktrees/*)
+                worktree_name=$(basename "$(git -C "${cwd}" rev-parse --show-toplevel 2>/dev/null)")
+                [ -n "$worktree_name" ] && out+="${dim}(#${reset}${purple}${worktree_name}${reset}${dim})${reset}"
+                ;;
+        esac
+    else
+        out+="${cyan}${cwd##*/}${reset}"
+    fi
     if [ -n "$git_branch" ]; then
         out+="${dim}@${reset}${green}${git_branch}${reset}"
         git_stat=$(git -C "${cwd}" diff --numstat 2>/dev/null | awk '{a+=$1; d+=$2} END {if (a+d>0) printf "+%d -%d", a, d}')
