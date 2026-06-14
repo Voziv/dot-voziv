@@ -61,6 +61,16 @@
   # Machine-specific home-manager config for this work mac. Merges with the
   # shared ./home modules the flake imports for this user.
   home-manager.users.${username} = { config, lib, ... }: {
+    # Homebrew 6.x refuses to load casks from third-party taps unless trusted
+    # (HOMEBREW_REQUIRE_TAP_TRUST). nix-darwin's homebrew module has no trust
+    # option, so declare brew's trust file ourselves to keep the terraspace
+    # cask (boltops-tools/software, see casks above) loadable on every switch.
+    # Path is ~/.homebrew/trust.json because XDG_CONFIG_HOME is unset here; brew
+    # would otherwise read $XDG_CONFIG_HOME/homebrew/trust.json.
+    home.file.".homebrew/trust.json".text = builtins.toJSON {
+      trustedcasks = [ "boltops-tools/software/terraspace" ];
+    };
+
     # Tool paths that were auto-appended to ~/.zshrc/.bashrc under stow. Under
     # nix the generated rc files are read-only, so declare them here. Ruby is
     # managed by asdf (see src/.voziv/zshrc.d/05-asdf.zsh), so no brew ruby path.
