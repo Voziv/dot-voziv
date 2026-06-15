@@ -34,6 +34,49 @@ let
     fi
   '';
 
+  # WorktreeCreate hook: place `claude --worktree` worktrees under a predictable
+  # ~/.worktrees/<repo>/<name> tree (shared with editors that read the same
+  # directory, e.g. Zed's worktree switcher) instead of the default location.
+  # Reads Claude's JSON payload from stdin, writes the absolute path to stdout.
+  worktreeCreate = pkgs.writeShellScript "voziv-claude-worktree-create" ''
+    payload="$(cat)"
+    name="$(${pkgs.jq}/bin/jq -r '.name' <<<"$payload")"
+    repo="$(basename "$(${pkgs.git}/bin/git rev-parse --show-toplevel 2>/dev/null)")"
+    if [ -z "$repo" ]; then
+      echo "Error: not inside a git repository." >&2
+      exit 1
+    fi
+    target="$HOME/.worktrees/$repo/$name"
+    if [ -d "$target" ]; then
+      echo "$target"
+      exit 0
+    fi
+    mkdir -p "$HOME/.worktrees/$repo"
+    if ${pkgs.git}/bin/git show-ref --verify --quiet "refs/heads/$name"; then
+      ${pkgs.git}/bin/git worktree add "$target" "$name" >&2
+    else
+      ${pkgs.git}/bin/git worktree add "$target" -b "$name" >&2
+    fi
+    echo "$target"
+  '';
+
+  # WorktreeRemove hook: safely tear down a worktree on removal, but refuse if it
+  # has uncommitted changes so in-progress work is never silently lost.
+  worktreeRemove = pkgs.writeShellScript "voziv-claude-worktree-remove" ''
+    payload="$(cat)"
+    path="$(${pkgs.jq}/bin/jq -r '.worktree_path' <<<"$payload")"
+    if [ -z "$path" ] || [ "$path" = null ] || [ ! -d "$path" ]; then
+      exit 0
+    fi
+    cd "$path" || exit 1
+    if ! ${pkgs.git}/bin/git diff-index --quiet HEAD --; then
+      echo "Warning: uncommitted changes in $path. Skipping auto-removal." >&2
+      exit 0
+    fi
+    cd "$HOME" || exit 1
+    ${pkgs.git}/bin/git worktree remove "$path" >&2
+  '';
+
   # Shared settings → ~/.claude/settings.json on every machine.
   baseSettings = {
     theme = "dark";
@@ -64,6 +107,9 @@ let
       "feature-dev"
       "pr-review-toolkit"
     ];
+    # Branch name == worktree name (no auto-prefix), so ~/.worktrees/<repo>/<name>
+    # and the branch line up with what the WorktreeCreate hook builds.
+    worktreeBranchPrefix = "";
     hooks = {
       PreToolUse = [
         {
@@ -76,6 +122,12 @@ let
             }
           ];
         }
+      ];
+      WorktreeCreate = [
+        { hooks = [ { type = "command"; command = "${worktreeCreate}"; } ]; }
+      ];
+      WorktreeRemove = [
+        { hooks = [ { type = "command"; command = "${worktreeRemove}"; } ]; }
       ];
     };
   };
