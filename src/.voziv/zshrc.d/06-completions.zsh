@@ -35,8 +35,10 @@ if type -p "gcloud" &> /dev/null; then
   fi
 fi
 
-# Reload the zsh-completions
-autoload -Uz compinit && compinit
+# Reload the zsh-completions. -u trusts the completion dirs without the security
+# audit: Workbrew owns /opt/homebrew/share as group-writable, which otherwise
+# trips compinit's insecure-directory prompt whenever it rebuilds the dump.
+autoload -Uz compinit && compinit -u
 
 # Support bash completions
 bashcompinit
