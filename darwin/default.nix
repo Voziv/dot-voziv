@@ -109,6 +109,12 @@
 
   # Use zsh as the default shell. nix-darwin wires this in to /etc/shells too.
   programs.zsh.enable = true;
+  # nix-darwin's global compinit (in /etc/zshrc) runs before our zshrc.d files
+  # and without -u, so on the Workbrew-managed mac it prompts about the
+  # group-writable /opt/homebrew/share/zsh dirs before our `compinit -u` in
+  # src/.voziv/zshrc.d/06-completions.zsh can run. Disable it and let that file
+  # own compinit; enableCompletion stays on so the nix completion fpath is kept.
+  programs.zsh.enableGlobalCompInit = false;
 
   # Symlink nix-installed GUI apps into ~/Applications/Nix Apps.
   system.activationScripts.applications.text = ''

@@ -19,6 +19,11 @@
     oh-my-zsh = {
       enable = true;
       plugins = [ "git" "docker" "sudo" "fzf" ];
+      # Workbrew owns /opt/homebrew/share/zsh as group-writable, which oh-my-zsh's
+      # compfix flags. Without this it would print an insecure-directory warning on
+      # every shell; setting it before oh-my-zsh loads makes it trust those dirs
+      # (compinit -u), matching how we already trust them in zshrc.d/06-completions.
+      extraConfig = "ZSH_DISABLE_COMPFIX=true";
     };
 
     plugins = [
