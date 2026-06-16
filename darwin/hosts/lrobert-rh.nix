@@ -1,6 +1,19 @@
 { username, ... }:
 {
   homebrew = {
+    # This machine is managed by Workbrew. /etc/homebrew/brew.env sets
+    # HOMEBREW_FORCE_BREW_WRAPPER=/opt/workbrew/bin/brew and
+    # HOMEBREW_DISABLE_NO_FORCE_BREW_WRAPPER=1, so Homebrew refuses any brew run
+    # whose parent process isn't the Workbrew wrapper — and that policy can't be
+    # overridden from the environment (the system brew.env reloads last). The
+    # default activation invokes /opt/homebrew/bin/brew under sudo, tripping the
+    # "conflicting Homebrew wrapper configuration" error. Pointing the prefix at
+    # the Workbrew bin dir makes nix-darwin run `brew bundle` through the wrapper,
+    # which re-execs the real brew so the parent-process check passes. nix-darwin
+    # only uses prefix to locate the brew binary and build PATH; the wrapper sets
+    # the true HOMEBREW_PREFIX (/opt/homebrew) itself.
+    prefix = "/opt/workbrew";
+
     taps = [
       "boltops-tools/software"
     ];
