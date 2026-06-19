@@ -44,6 +44,13 @@ in
     typeset -U path
     path+=(/opt/homebrew/bin /opt/homebrew/sbin)
     fpath+=(/opt/homebrew/share/zsh/site-functions)
+    # On Workbrew-managed hosts /etc/homebrew/brew.env forces
+    # HOMEBREW_FORCE_BREW_WRAPPER=/opt/workbrew/bin/brew and refuses any brew run
+    # not launched through that wrapper. Prepend the wrapper dir so `brew`
+    # resolves to it ahead of the already-present /opt/homebrew/bin (appending
+    # wouldn't beat the existing entry). Gated on the dir so non-Workbrew hosts
+    # are untouched.
+    [[ -d /opt/workbrew/bin ]] && path=(/opt/workbrew/bin $path)
   '';
 
   programs.bash.profileExtra = ''
@@ -54,5 +61,13 @@ in
       *:/opt/homebrew/bin:*) ;;
       *) export PATH="$PATH:/opt/homebrew/bin:/opt/homebrew/sbin" ;;
     esac
+    # See the zsh note above: prepend the Workbrew wrapper dir ahead of
+    # /opt/homebrew/bin so `brew` hits the wrapper on Workbrew-managed hosts.
+    if [[ -d /opt/workbrew/bin ]]; then
+      case ":$PATH:" in
+        *:/opt/workbrew/bin:*) ;;
+        *) export PATH="/opt/workbrew/bin:$PATH" ;;
+      esac
+    fi
   '';
 }
