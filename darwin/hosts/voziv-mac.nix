@@ -13,6 +13,7 @@
 
     casks = [
       "1password"
+      "affinity"
       "astro-editor"
       "discord"
       "ghostpepper"
