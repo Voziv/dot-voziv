@@ -19,6 +19,7 @@
     ];
 
     casks = [
+      "cmux"
       "gcloud-cli"
       "ghostpepper"
       "ghostty"
@@ -27,6 +28,7 @@
       "keepingyouawake"
       "linearmouse"
       "notunes"
+      "obsidian"
       "boltops-tools/software/terraspace"
     ];
 
