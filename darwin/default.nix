@@ -29,6 +29,8 @@
       autohide = true;
       show-recents = false;
       tilesize = 48;
+      # Bottom-right hot corner disabled (was Quick Note, which is unwanted).
+      wvous-br-corner = 1;
     };
 
     finder = {
