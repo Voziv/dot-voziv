@@ -2,6 +2,8 @@
 
 Most of what used to live here is now declarative in `darwin/default.nix` and gets applied by `darwin-rebuild switch --flake .#voziv-mac`. This file covers only the things nix-darwin can't automate.
 
+Keyboard behavior (F-keys as standard function keys), the full trackpad gesture set, and hot corners are among those declarative defaults — change them in `darwin/default.nix`, not System Settings, since a manual tweak gets reverted on the next switch. Some of those changes need a logout/login to fully apply.
+
 ### One-time, before first `darwin-rebuild`
 
 1. Install Homebrew (nix-darwin uses it as a bridge for GUI apps not in nixpkgs):
@@ -33,6 +35,5 @@ Most of what used to live here is now declarative in `darwin/default.nix` and ge
 ### Things still managed by hand (not configurable via nix-darwin)
 
 - 1Password's biometric unlock toggle
-- Logi Options+ device-specific configuration
 - iCloud account sign-in
 - Time Machine source/destinations
