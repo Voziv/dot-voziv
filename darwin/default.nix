@@ -20,6 +20,9 @@
       AppleInterfaceStyle = "Dark";
       # Use F1/F2/etc. as standard function keys, not media keys.
       "com.apple.keyboard.fnState" = true;
+      # Force Click off; swipe-between-pages with scroll off.
+      "com.apple.trackpad.forceClick" = false;
+      AppleEnableSwipeNavigateWithScrolls = false;
     };
 
     dock = {
@@ -37,7 +40,24 @@
 
     trackpad = {
       Clicking = true;
+      Dragging = false;
+      DragLock = false;
+      TrackpadRightClick = true;
       TrackpadThreeFingerDrag = true;
+      TrackpadThreeFingerTapGesture = 0; # look-up tap off
+      TrackpadCornerSecondaryClick = 0;
+      ActuateDetents = true;
+      FirstClickThreshold = 1;
+      SecondClickThreshold = 1;
+      TrackpadPinch = true; # two-finger zoom
+      TrackpadRotate = true;
+      TrackpadTwoFingerDoubleTapGesture = true; # smart zoom
+      TrackpadTwoFingerFromRightEdgeSwipeGesture = 3; # Notification Center
+      TrackpadThreeFingerHorizSwipeGesture = 2;
+      TrackpadThreeFingerVertSwipeGesture = 2;
+      TrackpadFourFingerHorizSwipeGesture = 2;
+      TrackpadFourFingerVertSwipeGesture = 2;
+      TrackpadFourFingerPinchGesture = 2;
     };
 
     # Disable the system services that bind to CMD+Shift+M / CMD+Shift+A,
@@ -78,6 +98,23 @@
     # clearing its key equivalent.
     "com.apple.symbolichotkeys" = {
       AppleSymbolicHotKeys."64" = { enabled = false; };
+    };
+
+    # Trackpad gesture keys with no typed nix-darwin option. Written to both
+    # trackpad domains so wired and Bluetooth trackpads stay in sync.
+    "com.apple.AppleMultitouchTrackpad" = {
+      TrackpadFiveFingerPinchGesture = 2;
+      TrackpadHandResting = 1;
+      TrackpadHorizScroll = 1;
+      TrackpadScroll = 1;
+      USBMouseStopsTrackpad = 0;
+    };
+    "com.apple.driver.AppleBluetoothMultitouch.trackpad" = {
+      TrackpadFiveFingerPinchGesture = 2;
+      TrackpadHandResting = 1;
+      TrackpadHorizScroll = 1;
+      TrackpadScroll = 1;
+      USBMouseStopsTrackpad = 0;
     };
   };
 
