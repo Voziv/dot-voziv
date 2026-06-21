@@ -18,6 +18,8 @@
       KeyRepeat = 2;
       AppleShowAllExtensions = true;
       AppleInterfaceStyle = "Dark";
+      # Use F1/F2/etc. as standard function keys, not media keys.
+      "com.apple.keyboard.fnState" = true;
     };
 
     dock = {
