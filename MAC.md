@@ -30,7 +30,7 @@ Keyboard behavior (F-keys as standard function keys), the full trackpad gesture 
    ```
    Then start colima: `colima start && brew services start colima`.
 
-4. **JetBrains shortcuts**: the three keyboard-shortcut unbinds (CMD+Shift+M, CMD+Shift+A in Terminal Services and Spotlight finder search) are wired in `darwin/default.nix` under `system.defaults.CustomUserPreferences`. If a future macOS rev moves these keys around, a logout/login may be needed before the change takes effect.
+4. **Keyboard-shortcut unbinds**: the three unbinds (CMD+Shift+M, CMD+Shift+A in Terminal Services and Spotlight finder search) are wired in `darwin/default.nix` under `system.defaults.CustomUserPreferences`. If a future macOS rev moves these keys around, a logout/login may be needed before the change takes effect.
 
 ### Things still managed by hand (not configurable via nix-darwin)
 

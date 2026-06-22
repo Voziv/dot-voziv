@@ -19,7 +19,6 @@
       "discord"
       "ghostpepper"
       "ghostty"
-      "jetbrains-toolbox"
       "jordanbaird-ice"
       "keepingyouawake"
       "linearmouse"

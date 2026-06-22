@@ -63,7 +63,7 @@
     };
 
     # Disable the system services that bind to CMD+Shift+M / CMD+Shift+A,
-    # so JetBrains tools can use them. Equivalent to the three "unbind"
+    # freeing them for app shortcuts. Equivalent to the three "unbind"
     # steps in MAC.md.
     #
     # NSUserKeyEquivalents disables the relevant menu shortcuts globally.
