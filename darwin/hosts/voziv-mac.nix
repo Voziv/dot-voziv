@@ -25,6 +25,7 @@
       "notunes"
       "obsidian"
       "orbstack"
+      "prismlauncher"
       "spotify"
       "todoist-app"
       "zen"
