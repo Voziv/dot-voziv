@@ -29,7 +29,7 @@ let
   # a commit message containing one of these flag strings would false-deny.
   blockCommitBypass = pkgs.writeShellScript "voziv-claude-block-commit-bypass" ''
     cmd="$(${pkgs.jq}/bin/jq -r '.tool_input.command // ""')"
-    if printf '%s' "$cmd" | grep -qE -- '(^|[[:space:]])(-n|--no-verify|--no-gpg-sign|--no-signoff)([[:space:]]|$)'; then
+    if printf '%s' "$cmd" | grep -qE '\bgit\b.*\bcommit\b' && printf '%s' "$cmd" | grep -qE -- '(^|[[:space:]])(-n|--no-verify|--no-gpg-sign|--no-signoff)([[:space:]]|$)'; then
       printf '%s' '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Blocked: git commit may not bypass signing, sign-off, or hooks (--no-verify/--no-gpg-sign/--no-signoff)."}}'
     fi
   '';
