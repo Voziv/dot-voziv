@@ -7,7 +7,6 @@
   };
 
   homebrew = {
-
     casks = [
       "1password"
       "affinity"
@@ -31,7 +30,7 @@
     brews = [
       "composer"
       "nvm"
-      { name = "coleam00/archon/archon"; trusted = true; }
+      "coleam00/archon/archon"
     ];
   };
 }
