@@ -14,10 +14,6 @@
     # the true HOMEBREW_PREFIX (/opt/homebrew) itself.
     prefix = "/opt/workbrew";
 
-    taps = [
-      "boltops-tools/software"
-    ];
-
     casks = [
       "cmux"
       "gcloud-cli"
@@ -29,7 +25,7 @@
       "linearmouse"
       "notunes"
       "obsidian"
-      "boltops-tools/software/terraspace"
+      { name = "boltops-tools/software/terraspace"; trusted = true; }
     ];
 
     # cleanup = "zap" (darwin/default.nix) uninstalls any brew not listed here.

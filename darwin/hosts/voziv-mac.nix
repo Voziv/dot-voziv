@@ -7,9 +7,6 @@
   };
 
   homebrew = {
-    taps = [
-      "coleam00/archon"
-    ];
 
     casks = [
       "1password"
@@ -34,7 +31,7 @@
     brews = [
       "composer"
       "nvm"
-      "coleam00/archon/archon"
+      { name = "coleam00/archon/archon"; trusted = true; }
     ];
   };
 }
