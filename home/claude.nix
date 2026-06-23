@@ -22,16 +22,17 @@ let
   mkEnabledPlugins = plugins:
     lib.genAttrs (map (plugin: "${plugin}@claude-plugins-official") plugins) (_: true);
 
-  # Stops agents from bypassing the git-side commit policy (signing, sign-off,
-  # hooks) via escape flags. PreToolUse runs before the commit, so it can only
-  # inspect the command string — it is a guard against bypass flags, not proof
-  # of signing (signByDefault in git.nix is what proves that). Parsing caveat:
-  # a commit message containing one of these flag strings would false-deny.
-  blockCommitBypass = pkgs.writeShellScript "voziv-claude-block-commit-bypass" ''
-    cmd="$(${pkgs.jq}/bin/jq -r '.tool_input.command // ""')"
-    if printf '%s' "$cmd" | grep -qE '\bgit\b.*\bcommit\b' && printf '%s' "$cmd" | grep -qE -- '(^|[[:space:]])(-n|--no-verify|--no-gpg-sign|--no-signoff)([[:space:]]|$)'; then
-      printf '%s' '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Blocked: git commit may not bypass signing, sign-off, or hooks (--no-verify/--no-gpg-sign/--no-signoff)."}}'
-    fi
+  # Stops agents from bypassing or weakening the git-side signing/verification
+  # policy. PreToolUse runs before the call, so this is a guard against bypass
+  # attempts, not proof of signing (signByDefault in git.nix is what proves
+  # that). The matcher logic lives in a committed script so it can be unit-tested
+  # directly by test-git-policy-hook.sh at the repo root; this wrapper only pins
+  # the tools it needs on PATH and hands off. It covers: git commit bypass flags,
+  # git config writes, inline `git -c`/`--config-env` overrides, and direct edits
+  # to files under any .git directory (via tools or bash writes).
+  blockGitPolicy = pkgs.writeShellScript "voziv-claude-block-git-policy" ''
+    export PATH="${lib.makeBinPath [ pkgs.coreutils pkgs.gnugrep pkgs.gnused pkgs.gawk pkgs.jq ]}:$PATH"
+    exec ${pkgs.bash}/bin/bash ${self}/src/.claude/hooks/block-git-policy.sh
   '';
 
   # WorktreeCreate hook: place `claude --worktree` worktrees under a predictable
@@ -113,12 +114,11 @@ let
     hooks = {
       PreToolUse = [
         {
-          matcher = "Bash";
+          matcher = "Bash|Write|Edit|MultiEdit|NotebookEdit";
           hooks = [
             {
               type = "command";
-              "if" = "Bash(git commit:*)";
-              command = "${blockCommitBypass}";
+              command = "${blockGitPolicy}";
             }
           ];
         }
