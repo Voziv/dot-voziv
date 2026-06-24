@@ -54,6 +54,7 @@
       "openjdk"
       "openssl@1.1"
       "pcre2"
+      "pgcli"
       "php"
       "php@8.2"
       "php@8.3"
