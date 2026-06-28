@@ -23,6 +23,12 @@ if type -p "k3d" &> /dev/null; then
   source <(k3d completion zsh)
 fi
 
+# pnpm's completion is dynamic: it shells out to a completion-server that reads
+# the nearest package.json, so `pnpm run <TAB>` completes its scripts.
+if type -p "pnpm" &> /dev/null; then
+  source <(pnpm completion zsh)
+fi
+
 if type -p "gcloud" &> /dev/null; then
   if we_are_mac; then
     if [ -f "/opt/homebrew/share/google-cloud-sdk/completion.zsh.inc" ]; then
