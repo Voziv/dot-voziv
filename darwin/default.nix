@@ -120,6 +120,14 @@
     };
   };
 
+  # ─── Touch ID for sudo ───────────────────────────────────────────────────
+  # Manages /etc/pam.d/sudo_local. `reattach` pulls in pam_reattach so the
+  # fingerprint prompt also works when sudo runs inside tmux/screen.
+  security.pam.services.sudo_local = {
+    touchIdAuth = true;
+    reattach = true;
+  };
+
   # ─── Homebrew bridge (apps not in nixpkgs) ───────────────────────────────
   # nix-darwin doesn't install Homebrew itself; install it once manually:
   #   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
