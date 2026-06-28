@@ -24,6 +24,7 @@
       "prismlauncher"
       "spotify"
       "todoist-app"
+      "utm"
       "zen"
     ];
 
