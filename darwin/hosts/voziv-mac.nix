@@ -31,6 +31,7 @@
     brews = [
       "composer"
       "nvm"
+      "php"
       "coleam00/archon/archon"
     ];
   };

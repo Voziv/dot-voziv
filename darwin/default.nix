@@ -1,4 +1,4 @@
-{ pkgs, username, ... }:
+{ config, pkgs, username, ... }:
 {
   # Determinate Nix manages the Nix daemon itself, so opt nix-darwin out of
   # managing it. Flakes + nix-command are on by default in Determinate.
@@ -156,6 +156,26 @@
       extraFlags = [ "--force-cleanup" "--zap" ];
     };
   };
+
+  # `brew bundle --upgrade` (the homebrew activation above) only upgrades
+  # entries listed in the generated Brewfile — transitive dependencies are
+  # installed but never upgraded, so they rot indefinitely. Sweep them up with a
+  # real `brew upgrade` afterwards. postActivation is the next activation step
+  # after `homebrew`, so the bundle has already installed/zapped by this point.
+  #
+  # Runs through `sudo --user` like nix-darwin's own bundle invocation: brew
+  # refuses to run as root, and activation runs as root. On Workbrew hosts
+  # homebrew.prefix points at /opt/workbrew, so this resolves to the wrapper the
+  # forced-wrapper policy demands (see darwin/hosts/lrobert-rh.nix).
+  system.activationScripts.postActivation.text = ''
+    echo >&2 "Homebrew upgrade..."
+    if [ -f "${config.homebrew.prefix}/bin/brew" ]; then
+      sudo \
+        --user=${username} \
+        --set-home \
+        "${config.homebrew.prefix}/bin/brew" upgrade
+    fi
+  '';
 
   # Battery toolkit comes from a tap and requires --no-quarantine. Add
   # manually after the first switch:
