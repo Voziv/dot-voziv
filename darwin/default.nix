@@ -29,6 +29,7 @@
       autohide = true;
       show-recents = false;
       tilesize = 48;
+      mru-spaces = false;
       # Bottom-right hot corner disabled (was Quick Note, which is unwanted).
       wvous-br-corner = 1;
     };
@@ -45,7 +46,10 @@
       Dragging = false;
       DragLock = false;
       TrackpadRightClick = true;
-      TrackpadThreeFingerDrag = true;
+      # Must stay off: macOS silently promotes the Mission Control and
+      # app-switch swipes from three fingers to four whenever three-finger
+      # drag is enabled, which breaks TrackpadThreeFingerVertSwipeGesture below.
+      TrackpadThreeFingerDrag = false;
       TrackpadThreeFingerTapGesture = 0; # look-up tap off
       TrackpadCornerSecondaryClick = 0;
       ActuateDetents = true;
@@ -98,6 +102,13 @@
         "64" = { enabled = true; };
         "65" = { enabled = false; };
       };
+    };
+
+    # Mission Control gestures. Pinned so a macOS update can't flip them back.
+    "com.apple.dock" = {
+      showMissionControlGestureEnabled = true;
+      showAppExposeGestureEnabled = false;
+      enterMissionControlByTopWindowDrag = false;
     };
 
     # Trackpad gesture keys with no typed nix-darwin option. Written to both

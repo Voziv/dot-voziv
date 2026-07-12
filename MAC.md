@@ -39,6 +39,8 @@ Keyboard behavior (F-keys as standard function keys), the full trackpad gesture 
    | 64 | CMD+Space | Show Spotlight search — must stay **enabled** |
    | 65 | CMD+Option+Space | Show Finder search window — kept **disabled** |
 
+5. **Three-finger drag stays off**: enabling it makes macOS quietly promote the Mission Control / app-switch swipes from three fingers to four, which breaks swipe-up-for-Mission-Control. `darwin/default.nix` pins `TrackpadThreeFingerDrag = false` for this reason.
+
 ### Things still managed by hand (not configurable via nix-darwin)
 
 - 1Password's biometric unlock toggle
