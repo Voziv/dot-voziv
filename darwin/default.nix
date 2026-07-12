@@ -62,21 +62,14 @@
       TrackpadFourFingerPinchGesture = 2;
     };
 
-    # Disable the system services that bind to CMD+Shift+M / CMD+Shift+A,
-    # freeing them for app shortcuts. Equivalent to the three "unbind"
-    # steps in MAC.md.
-    #
-    # NSUserKeyEquivalents disables the relevant menu shortcuts globally.
     ".GlobalPreferences"."com.apple.mouse.scaling" = 1.0;
   };
 
-  # Disable specific keyboard shortcuts (Service menu entries) by setting
-  # NSUserKeyEquivalents on the host app. These are the closest declarative
-  # equivalent to the manual unbind steps in MAC.md.
   system.defaults.CustomUserPreferences = {
+    # Free CMD+Shift+M / CMD+Shift+A for app shortcuts by disabling the
+    # Terminal Services entries that claim them. Both live under
+    # "NSServicesStatus" in the pbs domain.
     "pbs" = {
-      # Open Man Page in Terminal (CMD+Shift+M) and Search Man Page Index
-      # in Terminal (CMD+Shift+A) live under "NSServicesStatus".
       "NSServicesStatus" = {
         "com.apple.Terminal - Open man Page in Terminal - openManPage" = {
           enabled_context_menu = false;
@@ -96,10 +89,15 @@
         };
       };
     };
-    # Disable Spotlight's "Show Finder search window" (CMD+Shift+A) by
-    # clearing its key equivalent.
+    # Spotlight hotkeys. The IDs are easy to mix up and a wrong one silently
+    # kills CMD+Space, so both are pinned explicitly:
+    #   64 = Show Spotlight search      (CMD+Space)
+    #   65 = Show Finder search window  (CMD+Option+Space)
     "com.apple.symbolichotkeys" = {
-      AppleSymbolicHotKeys."64" = { enabled = false; };
+      AppleSymbolicHotKeys = {
+        "64" = { enabled = true; };
+        "65" = { enabled = false; };
+      };
     };
 
     # Trackpad gesture keys with no typed nix-darwin option. Written to both

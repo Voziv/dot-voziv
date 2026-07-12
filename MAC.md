@@ -30,7 +30,14 @@ Keyboard behavior (F-keys as standard function keys), the full trackpad gesture 
    ```
    Then start colima: `colima start && brew services start colima`.
 
-4. **Keyboard-shortcut unbinds**: the three unbinds (CMD+Shift+M, CMD+Shift+A in Terminal Services and Spotlight finder search) are wired in `darwin/default.nix` under `system.defaults.CustomUserPreferences`. If a future macOS rev moves these keys around, a logout/login may be needed before the change takes effect.
+4. **Keyboard shortcuts**: the Terminal Services unbinds (CMD+Shift+M, CMD+Shift+A) and the Spotlight hotkeys are wired in `darwin/default.nix` under `system.defaults.CustomUserPreferences`. A logout/login may be needed before a change takes effect.
+
+   Spotlight's two symbolic-hotkey IDs are easy to transpose, and picking the wrong one silently disables CMD+Space:
+
+   | ID | Shortcut | Setting |
+   |----|----------|---------|
+   | 64 | CMD+Space | Show Spotlight search — must stay **enabled** |
+   | 65 | CMD+Option+Space | Show Finder search window — kept **disabled** |
 
 ### Things still managed by hand (not configurable via nix-darwin)
 
