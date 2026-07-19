@@ -17,8 +17,6 @@
     casks = [
       "cmux"
       "gcloud-cli"
-      "ghostpepper"
-      "ghostty"
       "jordanbaird-ice"
       "kdiff3"
       "keepingyouawake"
@@ -62,7 +60,6 @@
       "postgresql@14"
       "python@3.12"
       "sops"
-      "stow"
       "terraform"
       "uv"
       "wget"

@@ -10,11 +10,8 @@
     casks = [
       "1password"
       "affinity"
-      "astro-editor"
       "cmux"
       "discord"
-      "ghostpepper"
-      "ghostty"
       "jordanbaird-ice"
       "keepingyouawake"
       "linearmouse"
@@ -32,7 +29,6 @@
       "composer"
       "nvm"
       "php"
-      "coleam00/archon/archon"
     ];
   };
 }
