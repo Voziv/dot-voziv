@@ -130,6 +130,9 @@ let
       "code-simplifier"
       "feature-dev"
       "pr-review-toolkit"
+      # Browser automation / e2e testing MCP server (Microsoft). Runs via npx,
+      # so it needs a node on PATH — node is installed outside Nix here.
+      "playwright"
     ];
     # Branch name == worktree name (no auto-prefix), so ~/.worktrees/<repo>/<name>
     # and the branch line up with what the WorktreeCreate hook builds.
