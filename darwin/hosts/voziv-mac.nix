@@ -11,6 +11,7 @@
       "1password"
       "affinity"
       "cmux"
+      "crystalfetch"
       "discord"
       "jordanbaird-ice"
       "keepingyouawake"
