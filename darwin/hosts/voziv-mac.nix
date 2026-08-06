@@ -20,6 +20,7 @@
       "obsidian"
       "orbstack"
       "prismlauncher"
+      "vuescan"
       "spotify"
       "todoist-app"
       "utm"
@@ -30,6 +31,8 @@
       "composer"
       "nvm"
       "php"
+      "sane-backends"
+      "tesseract"
     ];
   };
 }
