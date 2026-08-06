@@ -29,6 +29,7 @@
 
     brews = [
       "composer"
+      "ipp-usb"
       "nvm"
       "php"
       "sane-backends"
