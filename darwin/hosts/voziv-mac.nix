@@ -28,6 +28,7 @@
     ];
 
     brews = [
+      "azure-cli"
       "composer"
       "ipp-usb"
       "nvm"
