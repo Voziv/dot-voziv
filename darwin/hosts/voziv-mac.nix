@@ -30,7 +30,6 @@
     brews = [
       "azure-cli"
       "composer"
-      "ipp-usb"
       "nvm"
       "php"
       "sane-backends"
