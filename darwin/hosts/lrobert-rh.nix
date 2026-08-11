@@ -16,13 +16,13 @@
 
     casks = [
       "cmux"
-      # The cask declares auto_updates, so brew (and `brew bundle --upgrade`)
-      # skips it — but Homebrew's install disables gcloud's component manager,
-      # so it never actually self-updates. greedy forces the upgrade.
-      {
-        name = "gcloud-cli";
-        greedy = true;
-      }
+      # Deliberately NOT greedy: the cask declares auto_updates, so brew skips
+      # it, and gcloud self-updates in place via `gcloud components update`.
+      # Forcing a greedy cask upgrade crashes on Workbrew hosts — Workbrew sets
+      # HOMEBREW_CASK_OPTS with hyphenated dir flags (--input-methoddir=…) and
+      # Homebrew's Cask::Config#env symbolizes those flag names verbatim, so the
+      # installer-script child process rejects them via assert_valid_keys.
+      "gcloud-cli"
       "jordanbaird-ice"
       "kdiff3"
       "keepingyouawake"
