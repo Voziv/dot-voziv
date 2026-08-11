@@ -16,7 +16,13 @@
 
     casks = [
       "cmux"
-      "gcloud-cli"
+      # The cask declares auto_updates, so brew (and `brew bundle --upgrade`)
+      # skips it — but Homebrew's install disables gcloud's component manager,
+      # so it never actually self-updates. greedy forces the upgrade.
+      {
+        name = "gcloud-cli";
+        greedy = true;
+      }
       "jordanbaird-ice"
       "kdiff3"
       "keepingyouawake"
