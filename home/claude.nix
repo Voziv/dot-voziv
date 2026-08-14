@@ -123,6 +123,19 @@ let
       command = "bash ${claudeDir}/statusline-command.sh";
       padding = 1;
     };
+    # Claude auto-registers claude-plugins-official but nothing else, so any
+    # third-party marketplace has to be pre-declared here. Entries use the same
+    # shape Claude writes into ~/.claude/plugins/known_marketplaces.json; the
+    # clone and plugin cache under ~/.claude/plugins/ stay unmanaged runtime
+    # state, populated on first run. Do NOT run `claude plugin marketplace add`
+    # instead — at user scope it writes to settings.json, which is a read-only
+    # store symlink.
+    extraKnownMarketplaces = {
+      i-have-adhd.source = {
+        source = "github";
+        repo = "ayghri/i-have-adhd";
+      };
+    };
     enabledPlugins = mkEnabledPlugins [
       "frontend-design"
       "superpowers"
@@ -133,7 +146,11 @@ let
       # Browser automation / e2e testing MCP server (Microsoft). Runs via npx,
       # so it needs a node on PATH — node is installed outside Nix here.
       "playwright"
-    ];
+    ] // {
+      # Lives in the i-have-adhd marketplace above, so it can't go through
+      # mkEnabledPlugins (which qualifies every name with claude-plugins-official).
+      "i-have-adhd@i-have-adhd" = true;
+    };
     # Branch name == worktree name (no auto-prefix), so ~/.worktrees/<repo>/<name>
     # and the branch line up with what the WorktreeCreate hook builds.
     worktreeBranchPrefix = "";
