@@ -142,6 +142,7 @@ let
       "code-review"
       "code-simplifier"
       "feature-dev"
+      "mattpocock-skills"
       "pr-review-toolkit"
       # Browser automation / e2e testing MCP server (Microsoft). Runs via npx,
       # so it needs a node on PATH — node is installed outside Nix here.
