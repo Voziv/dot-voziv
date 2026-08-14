@@ -16,12 +16,6 @@
 
     casks = [
       "cmux"
-      # Deliberately NOT greedy: the cask declares auto_updates, so brew skips
-      # it, and gcloud self-updates in place via `gcloud components update`.
-      # Forcing a greedy cask upgrade crashes on Workbrew hosts — Workbrew sets
-      # HOMEBREW_CASK_OPTS with hyphenated dir flags (--input-methoddir=…) and
-      # Homebrew's Cask::Config#env symbolizes those flag names verbatim, so the
-      # installer-script child process rejects them via assert_valid_keys.
       "gcloud-cli"
       "jordanbaird-ice"
       "kdiff3"
