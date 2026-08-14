@@ -46,6 +46,7 @@
       "docker-compose"
       "excalidraw-converter"
       "ffmpeg"
+      "keeper-commander"
       "libksba"
       "libyaml"
       "nvm"
