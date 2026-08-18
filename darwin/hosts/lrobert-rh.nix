@@ -58,6 +58,7 @@
       "php@8.2"
       "php@8.3"
       "pkgconf"
+      "poppler"
       "postgresql@14"
       "python@3.12"
       "sops"
