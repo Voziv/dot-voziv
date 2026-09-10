@@ -15,7 +15,6 @@
     prefix = "/opt/workbrew";
 
     casks = [
-      "cmux"
       "gcloud-cli"
       "ghostty"
       "jordanbaird-ice"
