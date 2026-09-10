@@ -10,9 +10,9 @@
     casks = [
       "1password"
       "affinity"
-      "cmux"
       "crystalfetch"
       "discord"
+      "ghostty"
       "jordanbaird-ice"
       "keepingyouawake"
       "linearmouse"

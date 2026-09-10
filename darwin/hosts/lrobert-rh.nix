@@ -17,6 +17,7 @@
     casks = [
       "cmux"
       "gcloud-cli"
+      "ghostty"
       "jordanbaird-ice"
       "kdiff3"
       "keepingyouawake"
