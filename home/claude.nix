@@ -226,4 +226,11 @@ in
   # path so the command resolves regardless of the (differing) home directory.
   home.file.".claude/statusline-command.sh".source =
     "${self}/src/.claude/statusline-command.sh";
+
+  # Opt-in flag read by the i-have-adhd plugin's SessionStart hook: its presence
+  # (contents are ignored) makes the plugin inject its ruleset into every
+  # session instead of waiting for /i-have-adhd. Managed here so the opt-in
+  # follows the config to every machine rather than living as untracked runtime
+  # state under ~/.claude.
+  home.file.".claude/.i-have-adhd-always".text = "";
 }
