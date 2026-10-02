@@ -23,6 +23,7 @@
       "linearmouse"
       "notunes"
       "obsidian"
+      "warp"
       "boltops-tools/software/terraspace"
     ];
 

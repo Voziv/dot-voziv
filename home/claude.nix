@@ -180,21 +180,10 @@ let
   # nested attrsets merge — so a host's enabledPlugins ADD to the shared set —
   # while scalars like `theme` override. Give a machine its own slice by adding
   # a hostKey entry; absent hosts inherit baseSettings unchanged.
-  perHostSettings = {
-    lrobert-rh = {
-      # Ratehub work laptop: auto theme and the extra plugins used for work.
-      theme = "auto";
-      enabledPlugins = mkEnabledPlugins [
-        "zapier"
-        "typescript-lsp"
-        "cloudflare"
-        "datadog"
-        "slack"
-      ];
-    };
-  };
+  perHostSettings = { };
 in
-{
+# lrobert-rh (Ratehub work laptop) manages ~/.claude by hand instead.
+lib.mkIf (hostKey != "lrobert-rh") {
   programs.claude-code = {
     enable = true;
 
