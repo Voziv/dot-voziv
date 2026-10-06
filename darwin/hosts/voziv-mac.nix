@@ -9,9 +9,9 @@
   homebrew = {
     casks = [
       "1password"
-      "affinity"
       "crystalfetch"
       "discord"
+      "firefox"
       "ghostty"
       "jordanbaird-ice"
       "keepingyouawake"
@@ -22,8 +22,8 @@
       "prismlauncher"
       "vuescan"
       "spotify"
-      "todoist-app"
       "utm"
+      "warp"
       "zen"
     ];
 
