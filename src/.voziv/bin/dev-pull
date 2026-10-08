@@ -1,0 +1,58 @@
+#!/bin/bash
+#
+# dev-pull - update every git repo directly under a folder
+#
+# Usage: dev-pull [path]   (defaults to the current directory)
+#
+# Repos on their default branch get `git pull --ff-only`; repos on any
+# other branch only get `git fetch --prune`, so feature work is untouched.
+
+set -u
+
+PARALLEL_JOBS=8
+
+update_repo() {
+    local repo="$1"
+    local name
+    name=$(basename "$repo")
+    cd "$repo" || return
+
+    if [ -z "$(git remote)" ]; then
+        printf '%-40s \e[0;35mno remote\e[0m\n' "$name"
+        return
+    fi
+
+    local current_branch default_branch
+    current_branch=$(git symbolic-ref --quiet --short HEAD)
+    default_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null)
+    default_branch=${default_branch#origin/}
+    if [ -z "$default_branch" ]; then
+        for candidate in main master; do
+            if git show-ref --verify --quiet "refs/remotes/origin/$candidate"; then
+                default_branch=$candidate
+                break
+            fi
+        done
+    fi
+
+    local output
+    if [ -n "$current_branch" ] && [ "$current_branch" = "$default_branch" ]; then
+        if output=$(git pull --ff-only --prune --quiet 2>&1); then
+            printf '%-40s \e[0;32mpulled   %s\e[0m\n' "$name" "$current_branch"
+        else
+            printf '%-40s \e[0;31mFAILED   %s: %s\e[0m\n' "$name" "$current_branch" "$(echo "$output" | head -1)"
+        fi
+    else
+        if output=$(git fetch --prune --quiet 2>&1); then
+            printf '%-40s \e[0;33mfetched  %s\e[0m\n' "$name" "${current_branch:-(detached)}"
+        else
+            printf '%-40s \e[0;31mFAILED   fetch: %s\e[0m\n' "$name" "$(echo "$output" | head -1)"
+        fi
+    fi
+}
+export -f update_repo
+
+root="${1:-.}"
+for dir in "$root"/*/; do
+    [ -d "$dir/.git" ] && printf '%s\0' "${dir%/}"
+done | xargs -0 -n 1 -P "$PARALLEL_JOBS" bash -c 'update_repo "$1"' _ | sort
