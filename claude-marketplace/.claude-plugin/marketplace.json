@@ -1,0 +1,14 @@
+{
+  "name": "voziv",
+  "description": "Personal Claude Code plugins shared across voziv's machines",
+  "owner": {
+    "name": "Voz"
+  },
+  "plugins": [
+    {
+      "name": "voziv",
+      "source": "./plugins/voziv",
+      "description": "Git signing policy guard and ~/.worktrees worktree hooks"
+    }
+  ]
+}

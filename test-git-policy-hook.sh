@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Test harness for the git-policy PreToolUse hook
-# (src/.claude/hooks/block-git-policy.sh, wired up in home/claude.nix).
+# (claude-marketplace/plugins/voziv/hooks/block-git-policy.sh).
 #
 # It drives the REAL hook script — no reimplementation — so there is no drift to
 # guard against. Each case declares the DESIRED verdict (the CORRECT behaviour,
@@ -12,7 +12,7 @@
 
 set -u
 
-HOOK="$(cd "$(dirname "$0")" && pwd)/src/.claude/hooks/block-git-policy.sh"
+HOOK="$(cd "$(dirname "$0")" && pwd)/claude-marketplace/plugins/voziv/hooks/block-git-policy.sh"
 [ -f "$HOOK" ] || { echo "Hook not found: $HOOK" >&2; exit 2; }
 
 # Returns 0 (BLOCK) if the hook emits a deny decision for this tool call.

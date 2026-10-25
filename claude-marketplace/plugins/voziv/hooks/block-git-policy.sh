@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # PreToolUse hook: deny tool calls that bypass or weaken the local git
 # signing / verification policy. Registered for Bash and the file-editing tools
-# in home/claude.nix. PreToolUse runs before the call, so every decision is made
-# from the tool input alone.
+# in the voziv plugin's hooks/hooks.json. PreToolUse runs before the call, so
+# every decision is made from the tool input alone.
 #
 # Three vectors are guarded:
 #   1. git command bypass  - git commit ... with -n/--no-verify/--no-gpg-sign/

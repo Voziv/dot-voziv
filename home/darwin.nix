@@ -8,7 +8,8 @@ let
   # `hms` builds first, shows an `nvd diff` of nix store package/version
   # changes, then applies directly. Homebrew lives outside the nix store and
   # isn't previewed here; anything not in darwin/hosts/<host>.nix gets zapped
-  # on switch.
+  # on switch. After switching it runs claude-sync, which owns ~/.claude
+  # outside of nix.
   # Defined as a function (portable across bash + zsh).
   hmsFunction = ''
     hms() {
@@ -19,7 +20,8 @@ let
       echo "── nix store changes ─────────────────────────────"
       nvd diff /run/current-system ./result
       echo
-      sudo darwin-rebuild switch --flake "$HOME/.dotfiles#$host"
+      sudo darwin-rebuild switch --flake "$HOME/.dotfiles#$host" \
+        && "$HOME/.dotfiles/src/.voziv/bin/claude-sync"
       rm -f result
     }
   '';

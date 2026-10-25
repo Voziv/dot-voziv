@@ -6,6 +6,7 @@ let
   #
   # `hms` builds first and shows an `nvd diff` of nix store package/version
   # changes against the current generation, then prompts before switching.
+  # After switching it runs claude-sync, which owns ~/.claude outside of nix.
   # Defined as a function (portable across bash + zsh) so it can prompt.
   hmsFunction = ''
     hms() {
@@ -24,7 +25,10 @@ let
       printf "Apply these changes? [y/N] "
       read REPLY
       case "$REPLY" in
-        [yY]*) home-manager switch --flake "$HOME/.dotfiles#$host" ;;
+        [yY]*)
+          home-manager switch --flake "$HOME/.dotfiles#$host" \
+            && "$HOME/.dotfiles/src/.voziv/bin/claude-sync"
+          ;;
         *) echo "Aborted — nothing applied."; rm -f result; return 1 ;;
       esac
       rm -f result

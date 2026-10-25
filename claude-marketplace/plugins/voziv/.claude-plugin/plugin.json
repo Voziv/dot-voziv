@@ -1,0 +1,7 @@
+{
+  "name": "voziv",
+  "description": "Git signing policy guard and ~/.worktrees worktree hooks",
+  "author": {
+    "name": "Voz"
+  }
+}

@@ -1,0 +1,184 @@
+#!/usr/bin/env bash
+#
+# claude-sync - reconcile ~/.claude with the shared config in the dotfiles repo
+#
+# Usage: claude-sync
+#
+# Installs missing files silently. For each file that differs from the repo, it
+# shows a diff (live -> repo) and asks whether to overwrite the live copy, keep
+# it, or pull it into the repo. settings.json is a deep merge: the repo owns
+# only the keys in settings.managed.json, settings.defaults.json fills keys
+# that are absent, and everything else belongs to Claude Code.
+#
+# Without a terminal it only reports drift and changes nothing.
+#
+# Must run under macOS's /bin/bash 3.2, so no bash 4 features.
+
+set -euo pipefail
+
+repo="$(cd "${DOTFILES:-$HOME/.dotfiles}" && pwd -P)"
+source_dir="$repo/src/.claude"
+claude_dir="$HOME/.claude"
+host="$(hostname -s)"
+
+workspace="$(mktemp -d)"
+trap 'rm -rf "$workspace"' EXIT
+
+# A symlink into /nix/store is left over from when home-manager generated this
+# file. It holds nothing the user wrote, so it is replaced without asking.
+is_legacy_nix_link() {
+    [ -L "$1" ] && case "$(readlink "$1")" in /nix/store/*) true ;; *) false ;; esac
+}
+
+is_missing() {
+    is_legacy_nix_link "$1" || [ ! -e "$1" ]
+}
+
+# Writes via a temp file and mv so a symlink at the target is replaced, never
+# written through.
+install_file() {
+    local source="$1" target="$2"
+    mkdir -p "$(dirname "$target")"
+    cp "$source" "$target.claude-sync.$$"
+    mv -f "$target.claude-sync.$$" "$target"
+}
+
+# Shows the diff on stderr and prints the chosen action (overwrite, keep, or
+# pull) on stdout.
+resolve_drift() {
+    local label="$1" live="$2" desired="$3" reply
+    mkdir -p "$workspace/live/$(dirname "$label")" "$workspace/repo/$(dirname "$label")"
+    cp "$live" "$workspace/live/$label"
+    cp "$desired" "$workspace/repo/$label"
+    {
+        echo
+        echo "── drift: $label ──"
+        (cd "$workspace" && git --no-pager diff --no-index --color=always \
+            --src-prefix= --dst-prefix= -- "live/$label" "repo/$label") || true
+    } >&2
+
+    if ! { [ -t 0 ] && [ -t 2 ]; }; then
+        echo "no terminal; run claude-sync to resolve" >&2
+        echo keep
+        return
+    fi
+    while true; do
+        printf '%s: [o]verwrite live with repo, [k]eep live, [p]ull live into repo? ' "$label" >&2
+        read -r reply
+        case "$reply" in
+            o | O) echo overwrite; return ;;
+            k | K) echo keep; return ;;
+            p | P) echo pull; return ;;
+        esac
+    done
+}
+
+sync_file() {
+    local label="$1" desired="$2" live="$claude_dir/$1"
+    if is_missing "$live"; then
+        install_file "$desired" "$live"
+        echo "installed  $label"
+        return
+    fi
+    cmp -s "$desired" "$live" && return
+    case "$(resolve_drift "$label" "$live" "$desired")" in
+        overwrite) install_file "$desired" "$live"; echo "overwrote  $label" ;;
+        keep) echo "kept       $label" ;;
+        pull) install_file "$live" "$desired"; echo "pulled     $label (commit it to share)" ;;
+    esac
+}
+
+sync_rules() {
+    local rule name
+    if is_legacy_nix_link "$claude_dir/rules"; then
+        rm "$claude_dir/rules"
+    fi
+    for rule in "$source_dir/rules"/*.md; do
+        sync_file "rules/$(basename "$rule")" "$rule"
+    done
+
+    # Host-specific instructions land as an always-loaded rule.
+    if [ -f "$source_dir/hosts/$host.md" ]; then
+        sync_file rules/host.md "$source_dir/hosts/$host.md"
+    fi
+
+    for rule in "$claude_dir/rules"/*.md; do
+        [ -e "$rule" ] || continue
+        name="$(basename "$rule")"
+        if [ "$name" != host.md ] && [ ! -f "$source_dir/rules/$name" ]; then
+            echo "local-only rules/$name (copy it to src/.claude/rules/ to share it)"
+        fi
+    done
+}
+
+# settings.managed.json writes machine paths as @HOME@ and @DOTFILES@.
+expand_tokens='walk(if type == "string" then split("@DOTFILES@") | join($dotfiles) | split("@HOME@") | join($home) else . end)'
+collapse_tokens='walk(if type == "string" then split($dotfiles) | join("@DOTFILES@") | split($home) | join("@HOME@") else . end)'
+
+# Copies the live value of every leaf in settings.managed.json back into it;
+# leaves that no longer exist live are removed. Keys only in the live file are
+# not pulled — add those to the repo by hand.
+pull_managed_settings() {
+    local live="$1" managed="$source_dir/settings.managed.json" updated="$workspace/managed.json"
+    jq --slurpfile live "$live" --arg home "$HOME" --arg dotfiles "$repo" "
+        (\$live[0] | $collapse_tokens) as \$live
+        | reduce paths(scalars) as \$path (.;
+            if (\$live | getpath(\$path)) == null
+            then delpaths([\$path])
+            else setpath(\$path; \$live | getpath(\$path))
+            end)
+    " "$managed" >"$updated"
+    install_file "$updated" "$managed"
+}
+
+sync_settings() {
+    local live="$claude_dir/settings.json" live_json="{}"
+    local desired="$workspace/settings.json"
+    local sorted_live="$workspace/settings.live.sorted.json"
+    local sorted_desired="$workspace/settings.desired.sorted.json"
+
+    if ! is_missing "$live"; then
+        if ! jq empty "$live" 2>/dev/null; then
+            echo "skipped    settings.json (not valid JSON; fix it by hand)" >&2
+            return
+        fi
+        live_json="$(cat "$live")"
+    fi
+
+    jq -n \
+        --slurpfile defaults "$source_dir/settings.defaults.json" \
+        --slurpfile managed "$source_dir/settings.managed.json" \
+        --argjson live "$live_json" \
+        --arg home "$HOME" --arg dotfiles "$repo" \
+        "\$defaults[0] * \$live * (\$managed[0] | $expand_tokens)" >"$desired"
+
+    if is_missing "$live"; then
+        install_file "$desired" "$live"
+        echo "installed  settings.json"
+        return
+    fi
+
+    # Compare key-sorted forms so Claude's own key order isn't reported as drift.
+    jq -S . "$live" >"$sorted_live"
+    jq -S . "$desired" >"$sorted_desired"
+    cmp -s "$sorted_live" "$sorted_desired" && return
+    case "$(resolve_drift settings.json "$sorted_live" "$sorted_desired")" in
+        overwrite) install_file "$desired" "$live"; echo "overwrote  settings.json" ;;
+        keep) echo "kept       settings.json" ;;
+        pull) pull_managed_settings "$live"; echo "pulled     settings.json managed keys (commit it to share)" ;;
+    esac
+}
+
+sync_file CLAUDE.md "$source_dir/CLAUDE.md"
+sync_file statusline-command.sh "$source_dir/statusline-command.sh"
+sync_rules
+sync_settings
+
+# Opt-in flag read by the i-have-adhd plugin's SessionStart hook: its presence
+# (contents are ignored) makes the plugin inject its ruleset into every session.
+adhd_flag="$claude_dir/.i-have-adhd-always"
+if is_missing "$adhd_flag"; then
+    rm -f "$adhd_flag"
+    : >"$adhd_flag"
+    echo "installed  .i-have-adhd-always"
+fi

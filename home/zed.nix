@@ -17,7 +17,7 @@
 
     userSettings = {
       # Place `claude --worktree` worktrees where Zed's worktree switcher looks,
-      # matching the WorktreeCreate hook in home/claude.nix.
+      # matching the voziv Claude plugin's WorktreeCreate hook.
       git.worktree_directory = "~/.worktrees";
 
       indent_guides = {
