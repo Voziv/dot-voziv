@@ -169,10 +169,54 @@ sync_settings() {
     esac
 }
 
+# Claude Code auto-installs enabled plugins only from the official marketplace,
+# and the CLI doesn't register marketplaces declared in settings, so plugins
+# from any other marketplace would sit enabled but never installed.
+install_missing_plugins() {
+    local marketplace source plugin
+    local known="$claude_dir/plugins/known_marketplaces.json"
+    local installed="$claude_dir/plugins/installed_plugins.json"
+    if ! command -v claude >/dev/null; then
+        echo "skipped    plugin installs (claude not on PATH)" >&2
+        return
+    fi
+    jq empty "$claude_dir/settings.json" 2>/dev/null || return 0
+
+    jq -r --slurpfile live "$claude_dir/settings.json" \
+        --slurpfile known <(cat "$known" 2>/dev/null || echo '{}') '
+        .extraKnownMarketplaces | keys[] as $name
+        | select($known[0] | has($name) | not)
+        | $live[0].extraKnownMarketplaces[$name].source
+        | "\($name)\t\(.path // .repo // .url)"
+    ' "$source_dir/settings.managed.json" | while IFS="$(printf '\t')" read -r marketplace source; do
+        if claude plugin marketplace add "$source" >/dev/null 2>&1; then
+            echo "registered marketplace $marketplace"
+        else
+            echo "failed     marketplace $marketplace (run: claude plugin marketplace add $source)" >&2
+        fi
+    done
+
+    jq -r --slurpfile live "$claude_dir/settings.json" \
+        --slurpfile installed <(cat "$installed" 2>/dev/null || echo '{}') '
+        .enabledPlugins | keys[] as $plugin
+        | select($plugin | endswith("@claude-plugins-official") | not)
+        | select($live[0].enabledPlugins[$plugin] == true)
+        | select(($installed[0].plugins // {}) | has($plugin) | not)
+        | $plugin
+    ' "$source_dir/settings.managed.json" | while read -r plugin; do
+        if claude plugin install "$plugin" >/dev/null 2>&1; then
+            echo "installed  plugin $plugin"
+        else
+            echo "failed     plugin $plugin (run: claude plugin install $plugin)" >&2
+        fi
+    done
+}
+
 sync_file CLAUDE.md "$source_dir/CLAUDE.md"
 sync_file statusline-command.sh "$source_dir/statusline-command.sh"
 sync_rules
 sync_settings
+install_missing_plugins
 
 # Opt-in flag read by the i-have-adhd plugin's SessionStart hook: its presence
 # (contents are ignored) makes the plugin inject its ruleset into every session.
