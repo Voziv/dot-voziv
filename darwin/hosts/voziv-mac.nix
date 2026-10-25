@@ -23,7 +23,6 @@
       "vuescan"
       "spotify"
       "utm"
-      "warp"
       "zen"
     ];
 
