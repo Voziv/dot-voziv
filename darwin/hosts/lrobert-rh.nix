@@ -44,6 +44,7 @@
       "docker"
       "docker-buildx"
       "docker-compose"
+      "doctl"
       "excalidraw-converter"
       "ffmpeg"
       "keeper-commander"
